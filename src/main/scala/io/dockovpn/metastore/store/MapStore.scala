@@ -2,11 +2,11 @@
  * Copyright (c) 2023. Dockovpn Solutions. All Rights Reserved
  */
 
-package io.dockovpn.common.store
+package io.dockovpn.metastore.store
 
-import io.dockovpn.common.util.{CombPredicate, FieldPredicate, Predicate, Types}
-import io.dockovpn.common.store.MapStore.PredicateWrapper
-import io.dockovpn.common.util.PredicateBool._
+import io.dockovpn.metastore.util.{CombPredicate, FieldPredicate, Predicate, Types}
+import io.dockovpn.metastore.store.MapStore.PredicateWrapper
+import io.dockovpn.metastore.util.PredicateBool._
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future

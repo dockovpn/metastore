@@ -2,7 +2,7 @@
  * Copyright (c) 2023. Dockovpn Solutions. All Rights Reserved
  */
 
-package io.dockovpn.common.provider
+package io.dockovpn.metastore.provider
 
 import scala.reflect.ClassTag
 

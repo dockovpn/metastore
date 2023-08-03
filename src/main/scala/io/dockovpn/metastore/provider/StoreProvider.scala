@@ -2,10 +2,10 @@
  * Copyright (c) 2023. Dockovpn Solutions. All Rights Reserved
  */
 
-package io.dockovpn.common.provider
+package io.dockovpn.metastore.provider
 
-import io.dockovpn.common.db.DBRef
-import io.dockovpn.common.store.{AbstractStore, DBStore, MapStore, StoreType}
+import io.dockovpn.metastore.db.DBRef
+import io.dockovpn.metastore.store.{AbstractStore, DBStore, MapStore, StoreType}
 
 import scala.concurrent.ExecutionContext
 import scala.reflect.ClassTag

@@ -2,7 +2,7 @@
  * Copyright (c) 2023. Dockovpn Solutions. All Rights Reserved
  */
 
-package io.dockovpn.common.util
+package io.dockovpn.metastore.util
 
 import scala.reflect.runtime.universe._
 import scala.util.Try

@@ -2,9 +2,9 @@
  * Copyright (c) 2023. Dockovpn Solutions. All Rights Reserved
  */
 
-package io.dockovpn.common
+package io.dockovpn.metastore
 
-import io.dockovpn.common.util.Lazy
+import io.dockovpn.metastore.util.Lazy
 import slick.jdbc.MySQLProfile
 
 package object db {

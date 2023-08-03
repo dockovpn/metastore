@@ -2,12 +2,12 @@
  * Copyright (c) 2023. Dockovpn Solutions. All Rights Reserved
  */
 
-package io.dockovpn.common.store
+package io.dockovpn.metastore.store
 
-import io.dockovpn.common.db.{DBRef, Queries}
-import io.dockovpn.common.provider.AbstractTableMetadataProvider
-import io.dockovpn.common.util.Strings.toCamelCase
-import io.dockovpn.common.util.{Predicate, Types}
+import io.dockovpn.metastore.db.{DBRef, Queries}
+import io.dockovpn.metastore.provider.AbstractTableMetadataProvider
+import io.dockovpn.metastore.util.Strings.toCamelCase
+import io.dockovpn.metastore.util.{Predicate, Types}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag

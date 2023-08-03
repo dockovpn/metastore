@@ -2,7 +2,7 @@
  * Copyright (c) 2023. Dockovpn Solutions. All Rights Reserved
  */
 
-package io.dockovpn.common.util
+package io.dockovpn.metastore.util
 
 import java.util.concurrent.atomic.AtomicReference
 import scala.language.implicitConversions

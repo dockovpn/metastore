@@ -2,9 +2,9 @@
  * Copyright (c) 2023. Dockovpn Solutions. All Rights Reserved
  */
 
-package io.dockovpn.common.util
+package io.dockovpn.metastore.util
 
-import io.dockovpn.common.util.PredicateBool.PredicateBool
+import io.dockovpn.metastore.util.PredicateBool.PredicateBool
 
 object PredicateBool extends Enumeration {
   type PredicateBool = Value
