@@ -5,7 +5,7 @@ Abstraction layer for Map and DB table
 
 ### Create slick configuration
 
-In application.conf create entry for slick
+In `application.conf` create entry for slick
 
 ```
 slick {
