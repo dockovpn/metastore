@@ -3,6 +3,12 @@ Abstraction layer for Map and DB table
 
 ## Usage
 
+### Add library dependency
+
+```scala
+libraryDependencies += "io.dockovpn" %% "metastore" % "0.1.0"
+```
+
 ### Create slick configuration
 
 In `application.conf` create entry for slick
