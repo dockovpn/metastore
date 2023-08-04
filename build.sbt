@@ -2,6 +2,7 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "2.13.11"
 ThisBuild / organization := "io.dockovpn"
 ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("17")
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.Equals(Ref.Branch("master")))
 
 lazy val root = (project in file("."))
   .settings(
