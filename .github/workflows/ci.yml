@@ -15,6 +15,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  LIB_VERSION: ${{ github.ref.name }}
 
 jobs:
   build:
@@ -23,7 +24,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         scala: [2.13.11]
-        java: [temurin@8, temurin@17]
+        java: [temurin@8, temurin@11]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -39,12 +40,12 @@ jobs:
           java-version: 8
           cache: sbt
 
-      - name: Setup Java (temurin@17)
-        if: matrix.java == 'temurin@17'
+      - name: Setup Java (temurin@11)
+        if: matrix.java == 'temurin@11'
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 11
           cache: sbt
 
       - name: Check that workflows are up to date
@@ -65,7 +66,7 @@ jobs:
   publish:
     name: Publish Artifacts
     needs: [build]
-    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/heads/v'))
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/heads/release'))
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -86,12 +87,12 @@ jobs:
           java-version: 8
           cache: sbt
 
-      - name: Setup Java (temurin@17)
-        if: matrix.java == 'temurin@17'
+      - name: Setup Java (temurin@11)
+        if: matrix.java == 'temurin@11'
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 11
           cache: sbt
 
       - name: Download target directories (2.13.11)
