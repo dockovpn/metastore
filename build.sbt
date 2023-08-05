@@ -1,4 +1,4 @@
-ThisBuild / version := sys.env.getOrElse("LIB_VERSION", "0.1.0-SNAPSHOT")
+ThisBuild / version := sys.env.getOrElse("LIB_VERSION", "0.1.0-SNAPSHOT").replace("release/", "")
 ThisBuild / scalaVersion := "2.13.11"
 ThisBuild / organization := "io.dockovpn"
 ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("11")
