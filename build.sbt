@@ -32,6 +32,9 @@ lazy val root = (project in file("."))
     ),
     githubOwner := "matkovd",
     githubRepository := "metastore",
+    githubTokenSource := TokenSource.GitConfig("github.token") || TokenSource
+      .Environment("GITHUB_TOKEN") || TokenSource
+      .Environment("TOKEN"),
     libraryDependencies ++= Seq(
       scalaOrganization.value % "scala-reflect" % scalaVersion.value,
       "com.typesafe.slick" %% "slick" % "3.4.1",
