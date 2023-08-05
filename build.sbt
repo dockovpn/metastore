@@ -30,7 +30,8 @@ lazy val root = (project in file("."))
       "-Ywarn-unused:privates",            // Warn if a private member is unused.
       //"-Ywarn-value-discard"               // Warn when non-Unit expression results are unused.
     ),
-  
+    githubOwner := "dockovpn",
+    githubRepository := "metastore",
     libraryDependencies ++= Seq(
       scalaOrganization.value % "scala-reflect" % scalaVersion.value,
       "com.typesafe.slick" %% "slick" % "3.4.1",
