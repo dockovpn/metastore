@@ -3,7 +3,7 @@ ThisBuild / scalaVersion := "2.13.11"
 ThisBuild / organization := "io.dockovpn"
 ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("11")
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Branch("release")))
-ThisBuild / githubWorkflowEnv ++= Map("LIB_VERSION" -> "${{ github.ref.name }}")
+ThisBuild / githubWorkflowEnv ++= Map("LIB_VERSION" -> "${{ github.ref_name }}")
 
 lazy val root = (project in file("."))
   .settings(
