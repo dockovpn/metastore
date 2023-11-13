@@ -3,9 +3,15 @@ Abstraction layer for Map and DB table
 
 ## Usage
 
+### Add library dependency
+
+```scala
+libraryDependencies += "io.dockovpn" %% "metastore" % "0.1.0"
+```
+
 ### Create slick configuration
 
-In application.conf create entry for slick
+In `application.conf` create entry for slick
 
 ```
 slick {
@@ -56,12 +62,37 @@ implicit val executionContext: ExecutionContext = ExecutionContext.global
 private implicit val dbRef: DBRef = lazily { Database.forConfig("slick") }
 
 // Define custom table metadata provider which must extend io.dockovpn.AbstractTableMetadataProvider
-// =====
-// trait AbstractTableMetadataProvider {
-//   def getTableMetadata[V](implicit tag: ClassTag[V]): TableMetadata
-// }
-// =====
-private implicit val metadataProvider: TableMetadataProvider = new TableMetadataProvider()
+private implicit val metadataProvider: AbstractTableMetadataProvider = new AbstractTableMetadataProvider {
+  val UserClass: String = getType[User].toString
+  val SomeOtherStoreClass: String = getType[SomeOtherStoreClass].toString
+  // ...
+  // get FQCN for all classes you want to use with store
+
+  override def getTableMetadata[V](implicit tag: ClassTag[V]): TableMetadata = tag.runtimeClass.getName match {
+    case UserClass =>
+        new TableMetadata(
+          tableName = "users_table",
+          fieldName = "users_unique_field",
+          rconv = GetResult { r =>
+            r.skip
+            User(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<)
+          }
+        )
+      case SomeOtherStoreClass =>
+        new TableMetadata(
+          tableName = "some_other_table",
+          fieldName = "unique_field",
+          rconv = SomeOtherStoreClass { r =>
+            r.skip
+            UserSession(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<)
+          }
+        )
+      // ...
+      // match all FQCN names
+      case unrecognizedType =>
+        throw new IllegalArgumentException(s"Unrecognized type [$unrecognizedType] to get TableMetadata for")
+  }
+}
 ```
 
 ### Get store for your case class

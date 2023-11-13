@@ -1,6 +1,9 @@
-ThisBuild / version := "0.3.0-SNAPSHOT"
+ThisBuild / version := sys.env.getOrElse("LIB_VERSION", "0.1.0-SNAPSHOT").replace("release/", "")
 ThisBuild / scalaVersion := "2.13.11"
 ThisBuild / organization := "io.dockovpn"
+ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("11")
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Branch("release")))
+ThisBuild / githubWorkflowEnv ++= Map("LIB_VERSION" -> "${{ github.ref_name }}")
 
 lazy val root = (project in file("."))
   .settings(
@@ -28,7 +31,11 @@ lazy val root = (project in file("."))
       "-Ywarn-unused:privates",            // Warn if a private member is unused.
       //"-Ywarn-value-discard"               // Warn when non-Unit expression results are unused.
     ),
-  
+    githubOwner := "dockovpn",
+    githubRepository := "metastore",
+    githubTokenSource := TokenSource.GitConfig("github.token") || TokenSource
+      .Environment("GITHUB_TOKEN") || TokenSource
+      .Environment("TOKEN"),
     libraryDependencies ++= Seq(
       scalaOrganization.value % "scala-reflect" % scalaVersion.value,
       "com.typesafe.slick" %% "slick" % "3.4.1",
