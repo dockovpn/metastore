@@ -4,6 +4,7 @@
 
 package io.dockovpn.metastore.db
 
+import io.dockovpn.metastore.util.Strings.toCamelCase
 import io.dockovpn.metastore.util.{FieldPredicate, Predicate}
 import slick.jdbc.GetResult
 import slick.jdbc.MySQLProfile.api._
@@ -51,7 +52,7 @@ object Queries {
   // TODO: Implement Predicate -> SQL materializer
   private def predicateToSql(predicate: Predicate): String = {
     predicate match {
-      case FieldPredicate(field, _, value) => s"$field = '$value'"
+      case FieldPredicate(field, _, value) => s"${toCamelCase(field)} = '$value'"
       case _ => "1=1" // not implemented
     }
   }
