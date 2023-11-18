@@ -31,7 +31,8 @@ class MapStore[V <: Product] extends AbstractStore[V] {
   override def put(k: String, v: V): Future[Unit] = Future.successful(underlying.addOne(k, v))
   
   override def update(k: String, v: V): Future[Unit] = Future.successful(underlying.update(k, v))
-
+  
+  override def getAll(): Future[Seq[V]] = Future.successful(underlying.values.toSeq)
 }
 
 object MapStore {

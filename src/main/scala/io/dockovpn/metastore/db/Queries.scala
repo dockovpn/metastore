@@ -49,6 +49,11 @@ object Queries {
        |""".stripMargin.as[(String, String)]
   }
   
+  def getAllRecords[V](table: String)(implicit rconv: GetResult[V]): SqlStreamingAction[Vector[V], V, Effect] = {
+    sql"""SELECT * FROM #$table
+         |""".stripMargin.as[V]
+  }
+  
   // TODO: Implement Predicate -> SQL materializer
   private def predicateToSql(predicate: Predicate): String = {
     predicate match {

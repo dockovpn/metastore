@@ -19,4 +19,6 @@ trait AbstractStore[V] {
   def put(k: String, v: V): Future[Unit]
   
   def update(k: String, v: V): Future[Unit]
+  
+  def getAll(): Future[Seq[V]]
 }

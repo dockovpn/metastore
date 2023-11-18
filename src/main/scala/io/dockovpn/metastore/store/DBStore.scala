@@ -67,6 +67,11 @@ class DBStore[V <: Product: ClassTag](implicit ec: ExecutionContext, metadataPro
     }
   }
   
+  override def getAll(): Future[Seq[V]] =
+    dbRef.run(
+      Queries.getAllRecords(tableMetadata.tableName)
+    ).map(_.asInstanceOf[Vector[V]])
+  
   private def getColumnNameToSqlValueMap(v: V, schema: Map[String, String]): Map[String, Any] =
     Types.getFieldToValueMap(v)
       .map { p =>
