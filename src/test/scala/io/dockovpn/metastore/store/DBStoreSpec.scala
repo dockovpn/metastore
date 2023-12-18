@@ -345,7 +345,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = Some(1)
         val value = OptIntRecord(id = key, value = fieldValue)
         val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be (())
+        opResult should be(())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
@@ -356,7 +356,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = None
         val value = OptIntRecord(id = key, value = fieldValue)
         val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be (())
+        opResult should be(())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
@@ -408,7 +408,7 @@ class DBStoreSpec extends AnyWordSpec
       "value is OptTimestampRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
         val key = "key"
-        val fieldValue = Some(Timestamp.from(Instant.now()))
+        val fieldValue = Some(Timestamp.from(baseInstant))
         val value = OptTimestampRecord(id = key, value = fieldValue)
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be (())

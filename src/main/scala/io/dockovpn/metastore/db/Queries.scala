@@ -4,8 +4,8 @@
 
 package io.dockovpn.metastore.db
 
-import io.dockovpn.metastore.util.Strings.toCamelCase
-import io.dockovpn.metastore.util.{FieldPredicate, Predicate}
+import io.dockovpn.metastore.util.Sql.TableSchema
+import io.dockovpn.metastore.util.{Predicate, Sql}
 import slick.jdbc.GetResult
 import slick.jdbc.MySQLProfile.api._
 import slick.sql.SqlStreamingAction
@@ -18,8 +18,8 @@ object Queries {
          |WHERE #$field = $k
          |""".stripMargin.as[V]
          
-  def filter[V](predicate: Predicate, table: String)(implicit rconv: GetResult[V]): SqlStreamingAction[Vector[V], V, Effect] = {
-    val sqlPredicate = predicateToSql(predicate)
+  def filter[V](predicate: Predicate, table: String, schema: TableSchema)(implicit rconv: GetResult[V]): SqlStreamingAction[Vector[V], V, Effect] = {
+    val sqlPredicate = Sql.predicateToSql(predicate, schema)
     
     sql"""SELECT * FROM #$table
          |WHERE #$sqlPredicate
@@ -52,13 +52,5 @@ object Queries {
   def getAllRecords[V](table: String)(implicit rconv: GetResult[V]): SqlStreamingAction[Vector[V], V, Effect] = {
     sql"""SELECT * FROM #$table
          |""".stripMargin.as[V]
-  }
-  
-  // TODO: Implement Predicate -> SQL materializer
-  private def predicateToSql(predicate: Predicate): String = {
-    predicate match {
-      case FieldPredicate(field, _, value) => s"${toCamelCase(field)} = '$value'"
-      case _ => "1=1" // not implemented
-    }
   }
 }

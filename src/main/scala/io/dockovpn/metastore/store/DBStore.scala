@@ -6,8 +6,9 @@ package io.dockovpn.metastore.store
 
 import io.dockovpn.metastore.db.{DBRef, Queries}
 import io.dockovpn.metastore.provider.AbstractTableMetadataProvider
+import io.dockovpn.metastore.util.Sql.TableSchema
 import io.dockovpn.metastore.util.Strings.toCamelCase
-import io.dockovpn.metastore.util.{Predicate, Types}
+import io.dockovpn.metastore.util.{Predicate, Sql, Types}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
@@ -23,8 +24,6 @@ class DBStore[V <: Product](implicit ec: ExecutionContext,
                             tag: ClassTag[V],
                             dbRef: => DBRef) extends AbstractStore[V] {
   
-  private type TableSchema = Map[String, String]
-  
   private val tableMetadata = metadataProvider.getTableMetadata[V]
   
   private lazy val tableSchemaFuture = {
@@ -35,10 +34,6 @@ class DBStore[V <: Product](implicit ec: ExecutionContext,
   
   import tableMetadata.implicits._
   
-  override def filter(predicate: Predicate): Future[Seq[V]] = dbRef.run(
-    Queries.filter(predicate, tableMetadata.tableName)
-  ).map(_.asInstanceOf[Vector[V]])
-  
   override def contains(k: String): Future[Boolean] = get(k).map(_.nonEmpty)
   
   override def get(k: String): Future[Option[V]] =
@@ -46,7 +41,7 @@ class DBStore[V <: Product](implicit ec: ExecutionContext,
       Queries.getRecordsByKey(k, tableMetadata.tableName, tableMetadata.fieldName)
     ).map(_.headOption.asInstanceOf[Option[V]])
   
-  override def put(k: String, v: V): Future[Unit] = {
+  override def put(k: String, v: V): Future[Unit] =
     withSchema { schema =>
       val fieldToValueMap = getColumnNameToSqlValueMap(v, schema)
       val keys = fieldToValueMap.keys.toSeq
@@ -56,7 +51,6 @@ class DBStore[V <: Product](implicit ec: ExecutionContext,
         Queries.insertRecordIntoTable(keys, values, tableMetadata.tableName)
       ).map(_ => ())
     }
-  }
   
   override def update(k: String, v: V): Future[Unit] = {
     withSchema { schema =>
@@ -70,6 +64,13 @@ class DBStore[V <: Product](implicit ec: ExecutionContext,
     }
   }
   
+  override def filter(predicate: Predicate): Future[Seq[V]] =
+    withSchema { schema =>
+      dbRef.run(
+        Queries.filter(predicate, tableMetadata.tableName, schema)
+      ).map(_.asInstanceOf[Vector[V]])
+    }
+  
   override def getAll(): Future[Seq[V]] =
     dbRef.run(
       Queries.getAllRecords(tableMetadata.tableName)
@@ -82,29 +83,11 @@ class DBStore[V <: Product](implicit ec: ExecutionContext,
         val kvt = (kv._1, kv._2, schema(kv._1))
         val (columnName, maybeOptValue, sqlType) = kvt
   
-        // unwrap Option if any
-        val maybeNullValue = maybeOptValue match {
-          case option: Option[Any] =>
-            option.orNull
-          case _ => maybeOptValue
-        }
-  
-        // decide which values need to be wrapped in single quotes
-        val maybeQuotedValue = sqlType match {
-          case a if a startsWith "varchar" => s"'$maybeNullValue'"
-          case "tinyint(1)" => if (maybeNullValue.asInstanceOf[Boolean]) 1 else 0
-          case "timestamp" => s"'$maybeNullValue'"
-          case "uuid" => s"'$maybeNullValue'"
-          case _ => maybeNullValue
-        }
-  
-        val sqlValue = if (maybeQuotedValue == "'null'")
-          "NULL"
-        else maybeQuotedValue
+        val sqlValue = Sql.valueToSqlType(maybeOptValue, sqlType)
   
         (columnName, sqlValue)
       }
   
   // TODO: consider using fast Future from Akka to avoid scheduling of a Future which result is already available
-  private def withSchema(f: TableSchema => Future[Unit]): Future[Unit] = tableSchemaFuture.flatMap(f)
+  private def withSchema[R](f: TableSchema => Future[R]): Future[R] = tableSchemaFuture.flatMap(f)
 }
