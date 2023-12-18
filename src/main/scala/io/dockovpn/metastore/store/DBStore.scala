@@ -18,7 +18,10 @@ import scala.reflect.ClassTag
  * @param dbRef
  * @tparam V
  */
-class DBStore[V <: Product: ClassTag](implicit ec: ExecutionContext, metadataProvider: AbstractTableMetadataProvider, dbRef: => DBRef) extends AbstractStore[V] {
+class DBStore[V <: Product](implicit ec: ExecutionContext,
+                            metadataProvider: AbstractTableMetadataProvider,
+                            tag: ClassTag[V],
+                            dbRef: => DBRef) extends AbstractStore[V] {
   
   private type TableSchema = Map[String, String]
   
