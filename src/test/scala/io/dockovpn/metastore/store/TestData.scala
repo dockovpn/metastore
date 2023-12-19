@@ -9,8 +9,11 @@ import slick.jdbc.GetResult
 
 import java.sql.Timestamp
 import scala.reflect.ClassTag
-
 import slick.jdbc.MySQLProfile.api._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import scala.concurrent.Future
 
 object TestData {
   
@@ -115,5 +118,113 @@ object TestData {
   
   private val cfg = ConfigFactory.load("db-test.conf")
   
-  implicit val dbRef: DBRef = lazily { Database.forConfig("slick", cfg) }
+  implicit val dbRef: DBRef = lazily { Database.forConfig("slick-mariadb", cfg) }
+  
+  object Queries {
+    def initDB(): Future[Unit] = {
+      Future.sequence(List(
+        dbRef.run {
+          sql"""CREATE TABLE `int_records` (
+               |  `id` varchar(100) NOT NULL,
+               |  `value` int(11) NOT NULL,
+               |  PRIMARY KEY (`id`)
+               |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""CREATE TABLE `long_records` (
+               |  `id` varchar(100) NOT NULL,
+               |  `value` bigint(20) NOT NULL,
+               |  PRIMARY KEY (`id`)
+               |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""CREATE TABLE `string_records` (
+               |  `id` varchar(100) NOT NULL,
+               |  `value` varchar(100) NOT NULL,
+               |  PRIMARY KEY (`id`)
+               |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""CREATE TABLE `timestamp_records` (
+               |  `id` varchar(100) NOT NULL,
+               |  `value` timestamp NOT NULL,
+               |  PRIMARY KEY (`id`)
+               |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""CREATE TABLE `opt_int_records` (
+               |  `id` varchar(100) NOT NULL,
+               |  `value` int(11) DEFAULT NULL,
+               |  PRIMARY KEY (`id`)
+               |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""CREATE TABLE `opt_long_records` (
+               |  `id` varchar(100) NOT NULL,
+               |  `value` bigint(20) DEFAULT NULL,
+               |  PRIMARY KEY (`id`)
+               |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""CREATE TABLE `opt_string_records` (
+               |  `id` varchar(100) NOT NULL,
+               |  `value` varchar(100) DEFAULT NULL,
+               |  PRIMARY KEY (`id`)
+               |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""CREATE TABLE `opt_timestamp_records` (
+               |  `id` varchar(100) NOT NULL,
+               |  `value` timestamp NULL DEFAULT NULL,
+               |  PRIMARY KEY (`id`)
+               |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+               |""".stripMargin.as[Unit]
+        },
+      )).map(_ => ())
+    }
+    
+    def cleanTables(): Future[Unit] = {
+      Future.sequence(List(
+        dbRef.run {
+          sql"""TRUNCATE TABLE int_records
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""TRUNCATE TABLE long_records
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""TRUNCATE TABLE string_records
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""TRUNCATE TABLE timestamp_records
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""TRUNCATE TABLE opt_int_records
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""TRUNCATE TABLE opt_long_records
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""TRUNCATE TABLE opt_string_records
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""TRUNCATE TABLE opt_timestamp_records
+               |""".stripMargin.as[Unit]
+        },
+      )).map(_ => ())
+    }
+  }
 }

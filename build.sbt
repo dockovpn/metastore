@@ -44,5 +44,6 @@ lazy val root = (project in file("."))
       "org.slf4j" % "slf4j-simple" % "1.7.36",
       "org.scalatest" %% "scalatest" % "3.2.15" % Test,
       "org.scalamock" %% "scalamock" % "5.2.0" % Test,
+      "com.h2database" % "h2" % "2.2.224" % Test
     )
   )
