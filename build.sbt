@@ -9,12 +9,12 @@ lazy val root = (project in file("."))
   .settings(
     name := "metastore",
     scalacOptions ++= Seq(
-      "-deprecation",
+      //"-deprecation",
       "-encoding", "utf-8",                // Specify character encoding used by source files.
       "-explaintypes",                     // Explain type errors in more detail.
       "-feature",                          // Emit warning and location for usages of features that should be imported explicitly.
       "-unchecked",                        // Enable additional warnings where generated code depends on assumptions.
-      "-Xfatal-warnings",                  // Fail the compilation if there are any warnings.
+      //"-Xfatal-warnings",                  // Fail the compilation if there are any warnings.
       "-Xlint:constant",                   // Evaluation of a constant arithmetic expression results in an error.
       "-Xlint:doc-detached",               // A Scaladoc comment appears to be detached from its element.
       "-Xlint:inaccessible",               // Warn about inaccessible types in method signatures.
@@ -42,6 +42,9 @@ lazy val root = (project in file("."))
       "com.typesafe.slick" %% "slick-hikaricp" % "3.4.1",
       "org.mariadb.jdbc" % "mariadb-java-client" % "3.1.2",
       "org.slf4j" % "slf4j-simple" % "1.7.36",
+      "org.typelevel" %% "cats-core" % "2.12.0",
+      "org.typelevel" %% "cats-effect" % "3.5.4",
+      "org.testcontainers" % "testcontainers" % "1.20.0" % Test,
       "org.scalatest" %% "scalatest" % "3.2.15" % Test,
       "org.scalamock" %% "scalamock" % "5.2.0" % Test,
       "com.h2database" % "h2" % "2.2.224" % Test

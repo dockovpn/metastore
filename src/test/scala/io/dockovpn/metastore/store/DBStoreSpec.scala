@@ -3,7 +3,7 @@ package io.dockovpn.metastore.store
 import io.dockovpn.metastore.provider.StoreProvider
 import io.dockovpn.metastore.store.TestData._
 import io.dockovpn.metastore.util.FieldPredicate
-import org.scalatest.BeforeAndAfter
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers._
 import org.scalatest.wordspec.AnyWordSpec
@@ -16,16 +16,30 @@ import scala.concurrent.duration.DurationInt
 
 class DBStoreSpec extends AnyWordSpec
   with ScalaFutures
-  with BeforeAndAfter {
+  with BeforeAndAfter
+  with BeforeAndAfterAll {
   
   private val dbStoreType = StoreType.DBStoreType
   private val baseInstant = Instant.parse("2023-12-18T21:22:34Z")
   
-  before {
+  override protected def beforeAll(): Unit = {
+    val dbContainer = new MariadbContainer()
+    dbContainer.start()
+  }
+  
+  override protected def afterAll(): Unit = {
     Await.ready(Queries.cleanTables(), 10.seconds)
   }
   
-  "DBStore" ignore {
+  before {
+    Await.ready(Queries.initDB(), 10.seconds)
+  }
+  
+  after {
+    Await.ready(Queries.cleanTables(), 10.seconds)
+  }
+  
+  "DBStore" should {
     "put value successfully" when {
       "value is IntRecord" in {
         val testStore: AbstractStore[IntRecord] = StoreProvider.getStoreByType(dbStoreType)
