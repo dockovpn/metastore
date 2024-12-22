@@ -3,7 +3,7 @@ package io.dockovpn.metastore.store
 import io.dockovpn.metastore.provider.StoreProvider
 import io.dockovpn.metastore.store.TestData._
 import io.dockovpn.metastore.util.FieldPredicate
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers._
 import org.scalatest.wordspec.AnyWordSpec
@@ -16,7 +16,6 @@ import scala.concurrent.duration.DurationInt
 
 class DBStoreSpec extends AnyWordSpec
   with ScalaFutures
-  with BeforeAndAfter
   with BeforeAndAfterAll {
   
   private val dbStoreType = StoreType.DBStoreType
@@ -25,17 +24,11 @@ class DBStoreSpec extends AnyWordSpec
   override protected def beforeAll(): Unit = {
     val dbContainer = new MariadbContainer()
     dbContainer.start()
-  }
-  
-  override protected def afterAll(): Unit = {
-    Await.ready(Queries.cleanTables(), 10.seconds)
-  }
-  
-  before {
+    
     Await.ready(Queries.initDB(), 10.seconds)
   }
   
-  after {
+  override protected def afterAll(): Unit = {
     Await.ready(Queries.cleanTables(), 10.seconds)
   }
   
@@ -75,7 +68,7 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptIntRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val value = OptIntRecord(id = key, value = Some(1))
         val opResult: Unit = testStore.put(key, value).futureValue
         
@@ -83,7 +76,7 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptIntRecord and filed is None" in {
         val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val value = OptIntRecord(id = key, value = None)
         val opResult: Unit = testStore.put(key, value).futureValue
         
@@ -91,7 +84,7 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptLongRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val value = OptLongRecord(id = key, value = Some(1L))
         val opResult: Unit = testStore.put(key, value).futureValue
         
@@ -99,7 +92,7 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptLongRecord and filed is None" in {
         val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val value = OptLongRecord(id = key, value = None)
         val opResult: Unit = testStore.put(key, value).futureValue
         
@@ -107,7 +100,7 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptStringRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val value = OptStringRecord(id = key, value = Some("value"))
         val opResult: Unit = testStore.put(key, value).futureValue
         
@@ -115,7 +108,7 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptStringRecord and filed is None" in {
         val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val value = OptStringRecord(id = key, value = None)
         val opResult: Unit = testStore.put(key, value).futureValue
         
@@ -123,7 +116,7 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptTimestampRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val value = OptTimestampRecord(id = key, value = Some(Timestamp.from(baseInstant)))
         val opResult: Unit = testStore.put(key, value).futureValue
         
@@ -131,7 +124,7 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptTimestampRecord and filed is None" in {
         val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val value = OptTimestampRecord(id = key, value = None)
         val opResult: Unit = testStore.put(key, value).futureValue
         
@@ -143,8 +136,6 @@ class DBStoreSpec extends AnyWordSpec
         val testStore: AbstractStore[IntRecord] = StoreProvider.getStoreByType(dbStoreType)
         val key = "key"
         val value = IntRecord(id = key, value = 1)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -154,8 +145,6 @@ class DBStoreSpec extends AnyWordSpec
         val testStore: AbstractStore[LongRecord] = StoreProvider.getStoreByType(dbStoreType)
         val key = "key"
         val value = LongRecord(id = key, value = 1L)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -165,8 +154,6 @@ class DBStoreSpec extends AnyWordSpec
         val testStore: AbstractStore[StringRecord] = StoreProvider.getStoreByType(dbStoreType)
         val key = "key"
         val value = StringRecord(id = key, value = "value")
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -176,8 +163,6 @@ class DBStoreSpec extends AnyWordSpec
         val testStore: AbstractStore[TimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
         val key = "key"
         val value = TimestampRecord(id = key, value = Timestamp.from(baseInstant))
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -185,10 +170,8 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptIntRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val value = OptIntRecord(id = key, value = Some(1))
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -196,10 +179,8 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptIntRecord and filed is None" in {
         val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val value = OptIntRecord(id = key, value = None)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -207,10 +188,8 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptLongRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val value = OptLongRecord(id = key, value = Some(1L))
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -218,10 +197,8 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptLongRecord and filed is None" in {
         val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val value = OptLongRecord(id = key, value = None)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -229,10 +206,8 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptStringRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val value = OptStringRecord(id = key, value = Some("value"))
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -240,10 +215,8 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptStringRecord and filed is None" in {
         val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val value = OptStringRecord(id = key, value = None)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -251,10 +224,8 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptTimestampRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val value = OptTimestampRecord(id = key, value = Some(Timestamp.from(baseInstant)))
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -262,10 +233,8 @@ class DBStoreSpec extends AnyWordSpec
       }
       "value is OptTimestampRecord and filed is None" in {
         val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val value = OptTimestampRecord(id = key, value = None)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.get(key).futureValue
         getResult.isDefined should be(true)
@@ -278,8 +247,6 @@ class DBStoreSpec extends AnyWordSpec
         val key = "key"
         val fieldValue = 1
         val value = IntRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
@@ -289,8 +256,6 @@ class DBStoreSpec extends AnyWordSpec
         val key = "key"
         val fieldValue = 1L
         val value = LongRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
@@ -300,8 +265,6 @@ class DBStoreSpec extends AnyWordSpec
         val key = "key"
         val fieldValue = "value"
         val value = StringRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
@@ -311,96 +274,78 @@ class DBStoreSpec extends AnyWordSpec
         val key = "key"
         val fieldValue = Timestamp.from(baseInstant)
         val value = TimestampRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
       }
       "value is OptIntRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val fieldValue = Some(1)
         val value = OptIntRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
       }
       "value is OptIntRecord and filed is None" in {
         val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val fieldValue = None
         val value = OptIntRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be(())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
       }
       "value is OptLongRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val fieldValue = Some(1L)
         val value = OptLongRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be (())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
       }
       "value is OptLongRecord and filed is None" in {
         val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val fieldValue = None
         val value = OptLongRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be (())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
       }
       "value is OptStringRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val fieldValue = Some("value")
         val value = OptStringRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be (())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
       }
       "value is OptStringRecord and filed is None" in {
         val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val fieldValue = None
         val value = OptStringRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be (())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
       }
       "value is OptTimestampRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keySome"
         val fieldValue = Some(Timestamp.from(baseInstant))
         val value = OptTimestampRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be (())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))
       }
       "value is OptTimestampRecord and filed is None" in {
         val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
+        val key = "keyNone"
         val fieldValue = None
         val value = OptTimestampRecord(id = key, value = fieldValue)
-        val opResult: Unit = testStore.put(key, value).futureValue
-        opResult should be (())
         
         val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
         getResult should be(Seq(value))

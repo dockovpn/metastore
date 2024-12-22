@@ -85,7 +85,7 @@ class DBStore[V <: Product](implicit ec: ExecutionContext,
   
         val sqlValue = Sql.valueToSqlType(maybeOptValue, sqlType)
   
-        (columnName, sqlValue)
+        columnName -> sqlValue
       }
   
   // TODO: consider using fast Future from Akka to avoid scheduling of a Future which result is already available
