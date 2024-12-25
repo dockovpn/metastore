@@ -25,7 +25,7 @@ class DBStoreSpec extends AnyWordSpec
     val dbContainer = new MariadbContainer()
     dbContainer.start()
     
-    Await.ready(Queries.initDB(), 10.seconds)
+    Await.ready(Queries.initDB(), 20.seconds)
   }
   
   override protected def afterAll(): Unit = {
@@ -248,7 +248,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = 1
         val value = IntRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is LongRecord" in {
@@ -257,7 +257,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = 1L
         val value = LongRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is StringRecord" in {
@@ -266,7 +266,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = "value"
         val value = StringRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is TimestampRecord" in {
@@ -275,7 +275,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = Timestamp.from(baseInstant)
         val value = TimestampRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptIntRecord and filed is Some(_)" in {
@@ -284,7 +284,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = Some(1)
         val value = OptIntRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptIntRecord and filed is None" in {
@@ -293,7 +293,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = None
         val value = OptIntRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptLongRecord and filed is Some(_)" in {
@@ -302,7 +302,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = Some(1L)
         val value = OptLongRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptLongRecord and filed is None" in {
@@ -311,7 +311,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = None
         val value = OptLongRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptStringRecord and filed is Some(_)" in {
@@ -320,7 +320,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = Some("value")
         val value = OptStringRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptStringRecord and filed is None" in {
@@ -329,7 +329,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = None
         val value = OptStringRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptTimestampRecord and filed is Some(_)" in {
@@ -338,7 +338,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = Some(Timestamp.from(baseInstant))
         val value = OptTimestampRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptTimestampRecord and filed is None" in {
@@ -347,7 +347,7 @@ class DBStoreSpec extends AnyWordSpec
         val fieldValue = None
         val value = OptTimestampRecord(id = key, value = fieldValue)
         
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
     }
