@@ -1,12 +1,7 @@
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.store.TestData.Queries
 import org.testcontainers.containers.FixedHostPortGenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
-
-import java.time.Duration
-import scala.concurrent.Await
-import scala.concurrent.duration.DurationInt
 
 class MariadbContainer extends FixedHostPortGenericContainer[MariadbContainer]("mariadb:latest") {
   

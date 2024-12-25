@@ -4,13 +4,17 @@
 
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.util.Predicate
+import io.dockovpn.metastore.predicate.Predicates.Predicate
+import io.dockovpn.metastore.util.Macros
 
 import scala.concurrent.Future
+import scala.language.experimental.macros
 
-trait AbstractStore[V] {
+trait AbstractStore[V <: Product] {
   
   def contains(k: String): Future[Boolean]
+  
+  def filter(predicate: V => Boolean): Future[Seq[V]] = macro Macros.impl[V]
   
   def filter(predicate: Predicate): Future[Seq[V]]
   

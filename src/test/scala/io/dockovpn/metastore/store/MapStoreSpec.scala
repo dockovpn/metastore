@@ -1,8 +1,8 @@
 package io.dockovpn.metastore.store
 
+import io.dockovpn.metastore.predicate.Predicates.FieldPredicate
 import io.dockovpn.metastore.provider.StoreProvider
 import io.dockovpn.metastore.store.TestData._
-import io.dockovpn.metastore.util.FieldPredicate
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.wordspec.AnyWordSpec
@@ -260,7 +260,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
       
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is LongRecord" in {
@@ -271,7 +271,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is StringRecord" in {
@@ -282,7 +282,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is TimestampRecord" in {
@@ -293,7 +293,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptIntRecord and filed is Some(_)" in {
@@ -304,7 +304,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptIntRecord and filed is None" in {
@@ -315,7 +315,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptLongRecord and filed is Some(_)" in {
@@ -326,7 +326,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptLongRecord and filed is None" in {
@@ -337,7 +337,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptStringRecord and filed is Some(_)" in {
@@ -348,7 +348,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptStringRecord and filed is None" in {
@@ -359,7 +359,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptTimestampRecord and filed is Some(_)" in {
@@ -370,7 +370,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is OptTimestampRecord and filed is None" in {
@@ -381,7 +381,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
   
-        val getResult = testStore.filter(FieldPredicate("value", "=", fieldValue)).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
     }

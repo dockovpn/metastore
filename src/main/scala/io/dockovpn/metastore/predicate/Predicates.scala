@@ -1,8 +1,8 @@
-package io.dockovpn.metastore
+package io.dockovpn.metastore.predicate
 
-import io.dockovpn.metastore.predicate.PredicateBool.PredicateBool
+import io.dockovpn.metastore.predicate.Predicates.PredicateBool.PredicateBool
 
-package object predicate {
+object Predicates {
   object PredicateBool extends Enumeration {
     type PredicateBool = Value
     

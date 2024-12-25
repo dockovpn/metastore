@@ -1,5 +1,6 @@
 package io.dockovpn.metastore.util
 
+import io.dockovpn.metastore.predicate.Predicates.{FieldPredicate, Predicate}
 import io.dockovpn.metastore.util.Strings.toCamelCase
 
 object Sql {

@@ -4,9 +4,9 @@
 
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.util.{CombPredicate, FieldPredicate, Predicate, Types}
+import io.dockovpn.metastore.predicate.Predicates._
 import io.dockovpn.metastore.store.MapStore.PredicateWrapper
-import io.dockovpn.metastore.util.PredicateBool._
+import io.dockovpn.metastore.util.Types
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
@@ -45,20 +45,20 @@ object MapStore {
     // TODO: convert to tail recursion by applying commutativity law in boolean logic
     private def evalCombPredicate(c: CombPredicate, product: Product): Boolean = (c.left, c.right, c.bop) match {
       case (fl: FieldPredicate, fr: FieldPredicate, bop) => bop match {
-        case And => evalFieldPredicate(fl, product) && evalFieldPredicate(fr, product)
-        case Or => evalFieldPredicate(fl, product) || evalFieldPredicate(fr, product)
+        case PredicateBool.And => evalFieldPredicate(fl, product) && evalFieldPredicate(fr, product)
+        case PredicateBool.Or => evalFieldPredicate(fl, product) || evalFieldPredicate(fr, product)
       }
       case (fl: FieldPredicate, cr: CombPredicate, bop) => bop match {
-        case And => evalFieldPredicate(fl, product) && evalCombPredicate(cr, product)
-        case Or => evalFieldPredicate(fl, product) || evalCombPredicate(cr, product)
+        case PredicateBool.And => evalFieldPredicate(fl, product) && evalCombPredicate(cr, product)
+        case PredicateBool.Or => evalFieldPredicate(fl, product) || evalCombPredicate(cr, product)
       }
       case (cl: CombPredicate, fr: FieldPredicate, bop) => bop match {
-        case And => evalCombPredicate(cl, product) && evalFieldPredicate(fr, product)
-        case Or => evalCombPredicate(cl, product) || evalFieldPredicate(fr, product)
+        case PredicateBool.And => evalCombPredicate(cl, product) && evalFieldPredicate(fr, product)
+        case PredicateBool.Or => evalCombPredicate(cl, product) || evalFieldPredicate(fr, product)
       }
       case (cl: CombPredicate, cr: CombPredicate, bop) => bop match {
-        case And => evalCombPredicate(cl, product) && evalCombPredicate(cr, product)
-        case Or => evalCombPredicate(cl, product) || evalCombPredicate(cr, product)
+        case PredicateBool.And => evalCombPredicate(cl, product) && evalCombPredicate(cr, product)
+        case PredicateBool.Or => evalCombPredicate(cl, product) || evalCombPredicate(cr, product)
       }
     }
     
