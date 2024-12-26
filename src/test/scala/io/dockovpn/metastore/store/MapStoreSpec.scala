@@ -260,7 +260,8 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
       
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
+        //val getResult = testStore.filter(_.value == fieldValue).futureValue
+        val getResult = testStore.filter(p => p.value == fieldValue && p.id == "key" && p.value < 11).futureValue
         getResult should be(Seq(value))
       }
       "value is LongRecord" in {
@@ -365,7 +366,8 @@ with BeforeAndAfter {
       "value is OptTimestampRecord and filed is Some(_)" in {
         val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(mapStoreType)
         val key = "key"
-        val fieldValue = Some(Timestamp.from(Instant.now()))
+        val ist = Instant.now()
+        val fieldValue = Some(Timestamp.from(ist))
         val value = OptTimestampRecord(id = key, value = fieldValue)
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())

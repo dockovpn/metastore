@@ -39,8 +39,40 @@ object MapStore {
   
   implicit class PredicateWrapper(products: Seq[Product]) {
     
-    private def evalFieldPredicate(f: FieldPredicate, product: Product): Boolean =
-      Types.getFieldToValueMap(product)(f.field) == f.value
+    private def evalFieldPredicate(f: FieldPredicate, product: Product): Boolean = {
+      val fieldVal = Types.getFieldToValueMap(product)(f.field)
+      
+      f.op match {
+        case "==" =>
+          fieldVal == f.value
+        case "!=" =>
+          fieldVal != f.value
+        case ">" =>
+          fieldVal match {
+            case i: Int => i < f.value.asInstanceOf[Int]
+            case i: Long => i < f.value.asInstanceOf[Long]
+            case _ => throw new IllegalArgumentException("Can compare using > relationship only between Int ot Long types")
+          }
+        case "<" =>
+          fieldVal match {
+            case i: Int => i < f.value.asInstanceOf[Int]
+            case i: Long => i < f.value.asInstanceOf[Long]
+            case _ => throw new IllegalArgumentException("Can compare using < relationship only between Int ot Long types")
+          }
+        case ">=" =>
+          fieldVal match {
+            case i: Int => i >= f.value.asInstanceOf[Int]
+            case i: Long => i >= f.value.asInstanceOf[Long]
+            case _ => throw new IllegalArgumentException("Can compare using >= relationship only between Int ot Long types")
+          }
+        case "<=" =>
+          fieldVal match {
+            case i: Int => i <= f.value.asInstanceOf[Int]
+            case i: Long => i <= f.value.asInstanceOf[Long]
+            case _ => throw new IllegalArgumentException("Can compare using <= relationship only between Int ot Long types")
+          }
+      }
+    }
     
     // TODO: convert to tail recursion by applying commutativity law in boolean logic
     private def evalCombPredicate(c: CombPredicate, product: Product): Boolean = (c.left, c.right, c.bop) match {
