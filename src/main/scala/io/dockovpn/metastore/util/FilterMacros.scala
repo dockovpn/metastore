@@ -1,10 +1,8 @@
 package io.dockovpn.metastore.util
 
-import io.dockovpn.metastore.predicate.Predicates.FieldPredicate
-
 import scala.reflect.macros._
   
-object Macros {
+object FilterMacros {
   def impl[A](c: whitebox.Context)(predicate: c.Expr[A => Boolean]): c.Tree = {
     import c.universe._
     
@@ -18,12 +16,18 @@ object Macros {
       //val valType = valChunks(1)
       val normalizedValName = "searchObject"
       val applyDef = chunks(1).replace(valName, normalizedValName)
-      
-      val clauseExp = s"$normalizedValName\\.(.+?)\\.(==|!=|>|<|>=|<=)\\((.+?)\\).*?".r
+      val clauseExp = s"$normalizedValName\\.(.+?)\\.(==|!=|>|<|>=|<=)\\((.+?)\\)(\\)*\\.&&|\\)*\\.[|]{2})*.*?".r
       val newCode = clauseExp.findAllIn(applyDef).map { clause =>
-        val clauseExp(field, op, comp) = clause
-        s"FieldPredicate(\"$field\", \"$op\", $comp)"
-      }.mkString(" and ")
+        val clauseExp(field, op, comp, cob) = clause
+        val iCob = if (cob == null) {
+          ""
+        } else if (cob.endsWith(".&&")) {
+          " and "
+        } else {
+          throw new IllegalArgumentException("Only && boolean operator supported")
+        }
+        s"FieldPredicate(\"$field\", \"$op\", $comp)$iCob"
+      }.mkString
       
       println(newCode)
       
@@ -31,7 +35,7 @@ object Macros {
     }
     
     def compileAndRun(metastorePredicateTree: c.Tree): c.Tree =
-      c.parse(s"${c.prefix.tree}.filter($metastorePredicateTree)")
+      c.parse(s"import io.dockovpn.metastore.predicate.Predicates._\n${c.prefix.tree}.filter($metastorePredicateTree)")
     
     compileAndRun(genMetastorePredicateTree(predicate.tree))
   }

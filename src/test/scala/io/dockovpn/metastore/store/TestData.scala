@@ -26,12 +26,16 @@ object TestData {
   case class OptStringRecord(id: String, value: Option[String])
   case class OptTimestampRecord(id: String, value: Option[Timestamp])
   
-  case class SimpleTestRecord(
-    id            : String,
-    intValue      : Int,
-    optIntValue   : Option[Int],
-    stringValue   : String,
-    optStringValue: Option[String],
+  case class ComplexTestRecord(
+    id                : String,
+    intValue          : Int,
+    longValue         : Long,
+    stringValue       : String,
+    timestampValue    : Timestamp,
+    optIntValue       : Option[Int],
+    optLongValue      : Option[Long],
+    optStringValue    : Option[String],
+    optTimestampValue : Option[Timestamp]
   )
   
   implicit val metadataProvider: AbstractTableMetadataProvider = new AbstractTableMetadataProvider {
@@ -44,6 +48,7 @@ object TestData {
       val OptLongRecordClass: String = getType[OptLongRecord].toString.replace("TestData.", "TestData$")
       val OptStringRecordClass: String = getType[OptStringRecord].toString.replace("TestData.", "TestData$")
       val OptTimestampRecordClass: String = getType[OptTimestampRecord].toString.replace("TestData.", "TestData$")
+      //val ComplexTestRecordClass: String = getType[ComplexTestRecord].toString.replace("TestData.", "TestData$")
   
       tag.runtimeClass.getName match {
         case IntRecordClass =>

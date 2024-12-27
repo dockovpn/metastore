@@ -1,6 +1,6 @@
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.predicate.Predicates.FieldPredicate
+import io.dockovpn.metastore.container.MariadbContainer
 import io.dockovpn.metastore.provider.StoreProvider
 import io.dockovpn.metastore.store.TestData._
 import org.scalatest.BeforeAndAfterAll

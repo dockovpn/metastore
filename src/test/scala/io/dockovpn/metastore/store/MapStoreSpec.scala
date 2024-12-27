@@ -1,6 +1,5 @@
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.predicate.Predicates.FieldPredicate
 import io.dockovpn.metastore.provider.StoreProvider
 import io.dockovpn.metastore.store.TestData._
 import org.scalatest.BeforeAndAfter
@@ -260,8 +259,7 @@ with BeforeAndAfter {
         val opResult: Unit = testStore.put(key, value).futureValue
         opResult should be(())
       
-        //val getResult = testStore.filter(_.value == fieldValue).futureValue
-        val getResult = testStore.filter(p => p.value == fieldValue && p.id == "key" && p.value < 11).futureValue
+        val getResult = testStore.filter(_.value == fieldValue).futureValue
         getResult should be(Seq(value))
       }
       "value is LongRecord" in {
