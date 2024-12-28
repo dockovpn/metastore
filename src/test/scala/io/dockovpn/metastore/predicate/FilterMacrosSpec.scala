@@ -1,7 +1,7 @@
 package io.dockovpn.metastore.predicate
 
 import io.dockovpn.metastore.TestData.ComplexTestRecord
-import io.dockovpn.metastore.predicate.Predicates.{FieldPredicate, Predicate}
+import io.dockovpn.metastore.predicate.Predicates.{CombPredicate, FieldPredicate, Predicate, PredicateBool}
 import io.dockovpn.metastore.store.AbstractStore
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
@@ -48,55 +48,157 @@ class FilterMacrosSpec extends AnyWordSpec
   "FilterMacros" should {
     "generate correct Predicate" when {
       "single bool clause" when {
-        "filter(_.intValue == 1)" in {
-          val expected = FieldPredicate("intValue", "==", 1)
-          dummyStore(expected).filter(_.intValue == 1)
+        "expression is ==" when {
+          "filter(_.intValue == 1)" in {
+            val expected = FieldPredicate("intValue", "==", 1)
+            dummyStore(expected).filter(_.intValue == 1)
+          }
+          "filter(_.longValue == 1)" in {
+            val expected = FieldPredicate("longValue", "==", 1)
+            dummyStore(expected).filter(_.longValue == 1)
+          }
+          "filter(_.stringValue == \"example\")" in {
+            val expected = FieldPredicate("stringValue", "==", "example")
+            dummyStore(expected).filter(_.stringValue == "example")
+          }
+          "filter(_.timestampValue == Timestamp.from(instant))" in {
+            val instant = Instant.now()
+            val expected = FieldPredicate("timestampValue", "==", Timestamp.from(instant))
+            dummyStore(expected).filter(_.timestampValue == Timestamp.from(instant))
+          }
+          "filter(_.optIntValue == None)" in {
+            val expected = FieldPredicate("optIntValue", "==", None)
+            dummyStore(expected).filter(_.optIntValue == None)
+          }
+          "filter(_.optIntValue == Some(1))" in {
+            val expected = FieldPredicate("optIntValue", "==", Some(1))
+            dummyStore(expected).filter(_.optIntValue == Some(1))
+          }
+          "filter(_.optLongValue == None)" in {
+            val expected = FieldPredicate("optLongValue", "==", None)
+            dummyStore(expected).filter(_.optLongValue == None)
+          }
+          "filter(_.optLongValue == Some(1L))" in {
+            val expected = FieldPredicate("optLongValue", "==", Some(1))
+            dummyStore(expected).filter(_.optLongValue == Some(1L))
+          }
+          "filter(_.optStringValue == None)" in {
+            val expected = FieldPredicate("optStringValue", "==", None)
+            dummyStore(expected).filter(_.optStringValue == None)
+          }
+          "filter(_.optLongValue == Some(\"example\"))" in {
+            val expected = FieldPredicate("optStringValue", "==", Some("example"))
+            dummyStore(expected).filter(_.optStringValue == Some("example"))
+          }
+          "filter(_.optTimestampValue == None)" in {
+            val expected = FieldPredicate("optTimestampValue", "==", None)
+            dummyStore(expected).filter(_.optTimestampValue == None)
+          }
+          "filter(_.optTimestampValue == Some(Timestamp.from(instant)))" in {
+            val instant = Instant.now()
+            val expected = FieldPredicate("optTimestampValue", "==", Some(Timestamp.from(instant)))
+            dummyStore(expected).filter(_.optTimestampValue == Some(Timestamp.from(instant)))
+          }
         }
-        "filter(_.longValue == 1)" in {
-          val expected = FieldPredicate("longValue", "==", 1)
-          dummyStore(expected).filter(_.longValue == 1)
+      }
+      "two clauses joined by &&" when {
+        "filter(p => p.intValue == 1 && p.intValue == 1)" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("intValue", "==", 1),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.intValue == 1)
         }
-        "filter(_.stringValue == \"example\")" in {
-          val expected = FieldPredicate("stringValue", "==", "example")
-          dummyStore(expected).filter(_.stringValue == "example")
+        "filter(p => p.intValue == 1 && p.longValue == 1L)" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("longValue", "==", 1L),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.longValue == 1L)
         }
-        "filter(_.timestampValue == Timestamp.from(instant))" in {
+        "filter(p => p.intValue == 1 && p.stringValue == \"example\")" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("stringValue", "==", "example"),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.stringValue == "example")
+        }
+        "filter(p => p.intValue == 1 && p.timestampValue == Timestamp.from(instant))" in {
           val instant = Instant.now()
-          val expected = FieldPredicate("timestampValue", "==", Timestamp.from(instant))
-          dummyStore(expected).filter(_.timestampValue == Timestamp.from(instant))
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("timestampValue", "==", Timestamp.from(instant)),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.timestampValue == Timestamp.from(instant))
         }
-        "filter(_.optIntValue == None)" in {
-          val expected = FieldPredicate("optIntValue", "==", None)
-          dummyStore(expected).filter(_.optIntValue == None)
+        "filter(p => p.intValue == 1 && p.optIntValue == None)" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("optIntValue", "==", None),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.optIntValue == None)
         }
-        "filter(_.optIntValue == Some(1))" in {
-          val expected = FieldPredicate("optIntValue", "==", Some(1))
-          dummyStore(expected).filter(_.optIntValue == Some(1))
+        "filter(p => p.intValue == 1 && p.optIntValue == Some(1))" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("optIntValue", "==", Some(1)),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.optIntValue == Some(1))
         }
-        "filter(_.optLongValue == None)" in {
-          val expected = FieldPredicate("optLongValue", "==", None)
-          dummyStore(expected).filter(_.optLongValue == None)
+        "filter(p => p.intValue == 1 && p.optLongValue == None)" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("optLongValue", "==", None),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.optLongValue == None)
         }
-        "filter(_.optLongValue == Some(1L))" in {
-          val expected = FieldPredicate("optLongValue", "==", Some(1))
-          dummyStore(expected).filter(_.optLongValue == Some(1L))
+        "filter(p => p.intValue == 1 && p.optLongValue == Some(1L)" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("optLongValue", "==", Some(1L)),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.optLongValue == Some(1L))
         }
-        "filter(_.optStringValue == None)" in {
-          val expected = FieldPredicate("optStringValue", "==", None)
-          dummyStore(expected).filter(_.optStringValue == None)
+        "filter(p => p.intValue == 1 && p.optStringValue == None)" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("optStringValue", "==", None),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.optStringValue == None)
         }
-        "filter(_.optLongValue == Some(\"example\"))" in {
-          val expected = FieldPredicate("optStringValue", "==", Some("example"))
-          dummyStore(expected).filter(_.optStringValue == Some("example"))
+        "filter(p => p.intValue == 1 && p.optStringValue == Some(\"example\"))" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("optStringValue", "==", Some("example")),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.optStringValue == Some("example"))
         }
-        "filter(_.optTimestampValue == None)" in {
-          val expected = FieldPredicate("optTimestampValue", "==", None)
-          dummyStore(expected).filter(_.optTimestampValue == None)
+        "filter(p => p.intValue == 1 && p.optTimestampValue == None)" in {
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("optTimestampValue", "==", None),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.optTimestampValue == None)
         }
-        "filter(_.optTimestampValue == Some(Timestamp.from(instant)))" in {
+        "filter(p => p.intValue == 1 && p.optStringValue == Some(Timestamp.from(instant)))" in {
           val instant = Instant.now()
-          val expected = FieldPredicate("optTimestampValue", "==", Some(Timestamp.from(instant)))
-          dummyStore(expected).filter(_.optTimestampValue == Some(Timestamp.from(instant)))
+          val expected = CombPredicate(
+            FieldPredicate("intValue", "==", 1),
+            FieldPredicate("optStringValue", "==", Some(Timestamp.from(instant))),
+            PredicateBool.And
+          )
+          dummyStore(expected).filter(p => p.intValue == 1 && p.optStringValue == Some(Timestamp.from(instant)))
         }
       }
     }
