@@ -1,7 +1,7 @@
 package io.dockovpn.metastore.store
 
 import io.dockovpn.metastore.provider.StoreProvider
-import io.dockovpn.metastore.store.TestData._
+import io.dockovpn.metastore.TestData._
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.wordspec.AnyWordSpec

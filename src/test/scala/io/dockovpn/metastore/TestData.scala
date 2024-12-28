@@ -1,4 +1,4 @@
-package io.dockovpn.metastore.store
+package io.dockovpn.metastore
 
 import com.typesafe.config.ConfigFactory
 import io.dockovpn.metastore.db.DBRef
@@ -6,14 +6,12 @@ import io.dockovpn.metastore.provider.{AbstractTableMetadataProvider, TableMetad
 import io.dockovpn.metastore.util.Lazy.lazily
 import io.dockovpn.metastore.util.Types.getType
 import slick.jdbc.GetResult
-
-import java.sql.Timestamp
-import scala.reflect.ClassTag
 import slick.jdbc.MySQLProfile.api._
 
+import java.sql.Timestamp
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import scala.concurrent.Future
+import scala.reflect.ClassTag
 
 object TestData {
   

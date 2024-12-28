@@ -1,4 +1,4 @@
-package io.dockovpn.metastore.util
+package io.dockovpn.metastore.db
 
 import io.dockovpn.metastore.predicate.Predicates.{FieldPredicate, Predicate}
 import io.dockovpn.metastore.util.Strings.toCamelCase

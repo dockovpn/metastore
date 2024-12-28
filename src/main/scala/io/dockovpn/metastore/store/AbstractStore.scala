@@ -4,8 +4,8 @@
 
 package io.dockovpn.metastore.store
 
+import io.dockovpn.metastore.predicate.FilterMacros
 import io.dockovpn.metastore.predicate.Predicates.Predicate
-import io.dockovpn.metastore.util.FilterMacros
 
 import scala.concurrent.Future
 import scala.language.experimental.macros

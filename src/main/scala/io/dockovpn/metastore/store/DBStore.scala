@@ -4,12 +4,12 @@
 
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.db.{DBRef, Queries}
+import io.dockovpn.metastore.db.{DBRef, Queries, Sql}
 import io.dockovpn.metastore.predicate.Predicates.Predicate
 import io.dockovpn.metastore.provider.AbstractTableMetadataProvider
-import io.dockovpn.metastore.util.Sql.TableSchema
+import io.dockovpn.metastore.db.Sql.TableSchema
 import io.dockovpn.metastore.util.Strings.toCamelCase
-import io.dockovpn.metastore.util.{Sql, Types}
+import io.dockovpn.metastore.util.Types
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
