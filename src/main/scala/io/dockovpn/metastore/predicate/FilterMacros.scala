@@ -6,6 +6,15 @@ object FilterMacros {
   def impl[A](c: whitebox.Context)(predicate: c.Expr[A => Boolean]): c.Tree = {
     import c.universe._
     
+    val productToPredicateOpMap = Map(
+      "==" -> "PredicateOps.Eq",
+      "!=" -> "PredicateOps.Neq",
+      ">" -> "PredicateOps.Gt",
+      "<" -> "PredicateOps.Lt",
+      ">=" -> "PredicateOps.GtE",
+      "<=" -> "PredicateOps.LtE",
+    )
+    
     def genMetastorePredicateTree(input: c.Tree): c.Tree = {
       val code = showCode(input)
       val normalized = code.stripPrefix("(").stripSuffix(")")
@@ -54,9 +63,10 @@ object FilterMacros {
                 }
               case None => ""
             }
-            println(iCob)
             
-            predicateBuilder.append(s"FieldPredicate(\"$field\", \"$op\", $comp)$iCob")
+            val predicateOp = productToPredicateOpMap(op)
+            
+            predicateBuilder.append(s"FieldPredicate(\"$field\", $predicateOp, $comp)$iCob")
           case None => applyDefRest = ""
         }
       }

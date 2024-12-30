@@ -43,29 +43,29 @@ object MapStore {
       val fieldVal = Types.getFieldToValueMap(product)(f.field)
       
       f.op match {
-        case "==" =>
+        case PredicateOps.Eq =>
           fieldVal == f.value
-        case "!=" =>
+        case PredicateOps.Neq =>
           fieldVal != f.value
-        case ">" =>
+        case PredicateOps.Gt =>
           fieldVal match {
-            case i: Int => i < f.value.asInstanceOf[Int]
-            case i: Long => i < f.value.asInstanceOf[Long]
+            case i: Int => i > f.value.asInstanceOf[Int]
+            case i: Long => i > f.value.asInstanceOf[Long]
             case _ => throw new IllegalArgumentException("Can compare using > relationship only between Int ot Long types")
           }
-        case "<" =>
+        case PredicateOps.Lt =>
           fieldVal match {
             case i: Int => i < f.value.asInstanceOf[Int]
             case i: Long => i < f.value.asInstanceOf[Long]
             case _ => throw new IllegalArgumentException("Can compare using < relationship only between Int ot Long types")
           }
-        case ">=" =>
+        case PredicateOps.GtE =>
           fieldVal match {
             case i: Int => i >= f.value.asInstanceOf[Int]
             case i: Long => i >= f.value.asInstanceOf[Long]
             case _ => throw new IllegalArgumentException("Can compare using >= relationship only between Int ot Long types")
           }
-        case "<=" =>
+        case PredicateOps.LtE =>
           fieldVal match {
             case i: Int => i <= f.value.asInstanceOf[Int]
             case i: Long => i <= f.value.asInstanceOf[Long]
