@@ -1,6 +1,7 @@
 package io.dockovpn.metastore.predicate
 
 import io.dockovpn.metastore.TestData.ComplexTestRecord
+import io.dockovpn.metastore.predicate.Implicits._
 import io.dockovpn.metastore.predicate.Predicates.{CombPredicate, FieldPredicate, Predicate, PredicateBool, PredicateOps}
 import io.dockovpn.metastore.store.AbstractStore
 import org.scalatest.BeforeAndAfter
@@ -98,6 +99,12 @@ class FilterMacrosSpec extends AnyWordSpec
             val instant = Instant.now()
             val expected = FieldPredicate("optTimestampValue", PredicateOps.Eq, Some(Timestamp.from(instant)))
             dummyStore(expected).filter(_.optTimestampValue == Some(Timestamp.from(instant)))
+          }
+        }
+        "expression is >" when {
+          "filter(_.optIntValue > 1)" in {
+            val expected = FieldPredicate("optIntValue", PredicateOps.Gt, 1)
+            dummyStore(expected).filter(_.optIntValue > 1)
           }
         }
       }

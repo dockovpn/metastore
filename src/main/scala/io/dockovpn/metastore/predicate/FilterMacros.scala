@@ -17,9 +17,11 @@ object FilterMacros {
     
     def genMetastorePredicateTree(input: c.Tree): c.Tree = {
       val code = showCode(input)
+      println(code)
       val normalized = code.stripPrefix("(").stripSuffix(")")
       val chunks = normalized.split(" => ")
       val valDef = chunks(0).stripPrefix("(").stripSuffix(")")
+      //println(valDef)
       val valChunks = valDef.split(": ")
       val valName = valChunks(0)
       //val valType = valChunks(1)
@@ -40,7 +42,7 @@ object FilterMacros {
         clauseExp.findFirstIn(applyDefRest) match {
           case Some(value) =>
             //println(applyDefRest)
-            println(value)
+            //println(value)
             applyDefRest.indexOf(value) match {
               case 0 =>
                 applyDefRest = applyDefRest.substring(value.length)
