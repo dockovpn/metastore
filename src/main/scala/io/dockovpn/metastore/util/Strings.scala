@@ -4,24 +4,37 @@
 
 package io.dockovpn.metastore.util
 
+import scala.util.matching.Regex
+
 object Strings {
   
-  def toCamelCase(field: String): String = {
-    def getUpperIndices(field: String): Seq[Int] = {
-      val upperIndices = field.toList
-        .zipWithIndex
-        .filter(p => p._1.isUpper)
-      
-      upperIndices
-        .map(_._2)
-        .zipWithIndex
-        .map(p => p._1 + p._2)
-    }
+  def toCamelCase(field: String): String = field.toCamelCase
+  
+  implicit class StringOps(value: String) {
     
-    getUpperIndices(field).foldLeft(field) { (s, p) =>
-      val (s1, s2) = s.splitAt(p)
-      
-      s"${s1}_$s2".toLowerCase
+    def toCamelCase: String = replaceWith("[A-Z]".r, (found, _) => s"_${found.toLowerCase}").stripPrefix("_")
+    
+    def toSnakeCase: String = replaceWith("_([a-z])".r, (found, regex) => {
+      val regex(l) = found
+      l.capitalize
+    })
+    
+    def replaceWith(pattern: Regex, replaceFunc: (String, Regex) => String): String = {
+      val strBuilder = new StringBuilder()
+      var valueRest = value
+      while (valueRest.nonEmpty) {
+        pattern.findFirstIn(valueRest) match {
+          case Some(found) =>
+            val chunks = valueRest.split(found, 2)
+            strBuilder.append(chunks(0))
+            strBuilder.append(replaceFunc(found, pattern))
+            valueRest = chunks(1)
+          case None =>
+            strBuilder.append(valueRest)
+            valueRest = ""
+        }
+      }
+      strBuilder.mkString
     }
   }
 }
