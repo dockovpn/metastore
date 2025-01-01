@@ -34,15 +34,24 @@ object FilterMacros {
         .replace(".&&", " .&&")
         .replace(".||", " .||")
         .replace("io.dockovpn.metastore.predicate.Implicits.OptWrapper", "OptWrapper")
+        .replace("io.dockovpn.metastore.predicate.Implicits.TimestampWrapper", "TimestampWrapper")
         .replaceWith("scala\\.math.Ordering\\.(\\w)".r, (found, regex) => {
-          val regex(w) = found
-          w
-        })
-        .replaceWith(s"OptWrapper\\[.+?\\]\\(($normalizedValName\\..+?)\\)\\(.+?\\)".r, (found, regex) => {
           val regex(x) = found
           x
         })
-      println(applyDef)
+        .replaceWith(s"OptWrapper\\[.+?\\]\\(($normalizedValName\\..+?)\\)\\(.+?\\)+".r, (found, regex) => {
+          val regex(x) = found
+          x
+        })
+        .replaceWith(s"TimestampWrapper\\(($normalizedValName\\..+?)\\)".r, (found, regex) => {
+          val regex(x) = found
+          x
+        })
+        .replaceWith(s"scala.Predef.augmentString\\(($normalizedValName\\..+?)\\)".r, (found, regex) => {
+          val regex(x) = found
+          x
+        })
+      //println(applyDef)
       val clauseExp = (normalizedValName + "\\.(.+?)\\.(==|!=|>|<|>=|<=)\\((.+?)\\)(?:\\s|$)").r
       val cobExp = "^\\.(&&|[|]{2})".r
       var applyDefRest = applyDef
