@@ -25,10 +25,10 @@ object Strings {
       while (valueRest.nonEmpty) {
         pattern.findFirstIn(valueRest) match {
           case Some(found) =>
-            val chunks = valueRest.split(found, 2)
-            strBuilder.append(chunks(0))
+            val startIndex = valueRest.indexOf(found)
+            strBuilder.append(valueRest.substring(0, startIndex))
             strBuilder.append(replaceFunc(found, pattern))
-            valueRest = chunks(1)
+            valueRest = valueRest.substring(startIndex + found.length)
           case None =>
             strBuilder.append(valueRest)
             valueRest = ""

@@ -1,5 +1,7 @@
 package io.dockovpn.metastore.predicate
 
+import io.dockovpn.metastore.util.Strings.StringOps
+
 import scala.reflect.macros._
   
 object FilterMacros {
@@ -17,7 +19,7 @@ object FilterMacros {
     
     def genMetastorePredicateTree(input: c.Tree): c.Tree = {
       val code = showCode(input)
-      println(code)
+      //println(code)
       val normalized = code.stripPrefix("(").stripSuffix(")")
       val chunks = normalized.split(" => ")
       val valDef = chunks(0).stripPrefix("(").stripSuffix(")")
@@ -31,7 +33,16 @@ object FilterMacros {
       val applyDef = chunks(1).replace(s"$valName.", s"$normalizedValName.")
         .replace(".&&", " .&&")
         .replace(".||", " .||")
-      
+        .replace("io.dockovpn.metastore.predicate.Implicits.OptWrapper", "OptWrapper")
+        .replaceWith("scala\\.math.Ordering\\.(\\w)".r, (found, regex) => {
+          val regex(w) = found
+          w
+        })
+        .replaceWith(s"OptWrapper\\[.+?\\]\\(($normalizedValName\\..+?)\\)\\(.+?\\)".r, (found, regex) => {
+          val regex(x) = found
+          x
+        })
+      println(applyDef)
       val clauseExp = (normalizedValName + "\\.(.+?)\\.(==|!=|>|<|>=|<=)\\((.+?)\\)(?:\\s|$)").r
       val cobExp = "^\\.(&&|[|]{2})".r
       var applyDefRest = applyDef
