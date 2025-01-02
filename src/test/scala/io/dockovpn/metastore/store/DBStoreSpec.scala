@@ -242,113 +242,115 @@ class DBStoreSpec extends AnyWordSpec
       }
     }
     "filter value successfully" when {
-      "value is IntRecord" in {
-        val testStore: AbstractStore[IntRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
-        val fieldValue = 1
-        val value = IntRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is LongRecord" in {
-        val testStore: AbstractStore[LongRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
-        val fieldValue = 1L
-        val value = LongRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is StringRecord" in {
-        val testStore: AbstractStore[StringRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
-        val fieldValue = "value"
-        val value = StringRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is TimestampRecord" in {
-        val testStore: AbstractStore[TimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "key"
-        val fieldValue = Timestamp.from(baseInstant)
-        val value = TimestampRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is OptIntRecord and filed is Some(_)" in {
-        val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "keySome"
-        val fieldValue = Some(1)
-        val value = OptIntRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is OptIntRecord and filed is None" in {
-        val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "keyNone"
-        val fieldValue = None
-        val value = OptIntRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is OptLongRecord and filed is Some(_)" in {
-        val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "keySome"
-        val fieldValue = Some(1L)
-        val value = OptLongRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is OptLongRecord and filed is None" in {
-        val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "keyNone"
-        val fieldValue = None
-        val value = OptLongRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is OptStringRecord and filed is Some(_)" in {
-        val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "keySome"
-        val fieldValue = Some("value")
-        val value = OptStringRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is OptStringRecord and filed is None" in {
-        val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "keyNone"
-        val fieldValue = None
-        val value = OptStringRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is OptTimestampRecord and filed is Some(_)" in {
-        val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "keySome"
-        val fieldValue = Some(Timestamp.from(baseInstant))
-        val value = OptTimestampRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
-      }
-      "value is OptTimestampRecord and filed is None" in {
-        val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
-        val key = "keyNone"
-        val fieldValue = None
-        val value = OptTimestampRecord(id = key, value = fieldValue)
-        
-        val getResult = testStore.filter(_.value == fieldValue).futureValue
-        getResult should be(Seq(value))
+      "op is ==" when {
+        "value is IntRecord" in {
+          val testStore: AbstractStore[IntRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "key"
+          val fieldValue = 1
+          val value = IntRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is LongRecord" in {
+          val testStore: AbstractStore[LongRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "key"
+          val fieldValue = 1L
+          val value = LongRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is StringRecord" in {
+          val testStore: AbstractStore[StringRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "key"
+          val fieldValue = "value"
+          val value = StringRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is TimestampRecord" in {
+          val testStore: AbstractStore[TimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "key"
+          val fieldValue = Timestamp.from(baseInstant)
+          val value = TimestampRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is OptIntRecord and filed is Some(_)" in {
+          val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "keySome"
+          val fieldValue = Some(1)
+          val value = OptIntRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is OptIntRecord and filed is None" in {
+          val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "keyNone"
+          val fieldValue = None
+          val value = OptIntRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is OptLongRecord and filed is Some(_)" in {
+          val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "keySome"
+          val fieldValue = Some(1L)
+          val value = OptLongRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is OptLongRecord and filed is None" in {
+          val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "keyNone"
+          val fieldValue = None
+          val value = OptLongRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is OptStringRecord and filed is Some(_)" in {
+          val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "keySome"
+          val fieldValue = Some("value")
+          val value = OptStringRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is OptStringRecord and filed is None" in {
+          val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "keyNone"
+          val fieldValue = None
+          val value = OptStringRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is OptTimestampRecord and filed is Some(_)" in {
+          val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "keySome"
+          val fieldValue = Some(Timestamp.from(baseInstant))
+          val value = OptTimestampRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
+        "value is OptTimestampRecord and filed is None" in {
+          val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(dbStoreType)
+          val key = "keyNone"
+          val fieldValue = None
+          val value = OptTimestampRecord(id = key, value = fieldValue)
+          
+          val getResult = testStore.filter(_.value == fieldValue).futureValue
+          getResult should be(Seq(value))
+        }
       }
     }
   }

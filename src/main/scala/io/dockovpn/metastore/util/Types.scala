@@ -9,6 +9,8 @@ import scala.util.Try
 
 object Types {
   
+  def getInstanceType[A: TypeTag](x: A): Type = getType
+  
   def getType[A: TypeTag]: Type = typeOf[A]
   
   def getFieldToValueMap[A](v: A): Map[String, Any] = {

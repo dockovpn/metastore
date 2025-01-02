@@ -5,9 +5,12 @@
 package io.dockovpn.metastore.store
 
 import io.dockovpn.metastore.predicate.Predicates._
+import io.dockovpn.metastore.predicate.Implicits._
 import io.dockovpn.metastore.store.MapStore.PredicateWrapper
 import io.dockovpn.metastore.util.Types
+import io.dockovpn.metastore.util.Types.getInstanceType
 
+import java.sql.Timestamp
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
 
@@ -41,6 +44,7 @@ object MapStore {
     
     private def evalFieldPredicate(f: FieldPredicate, product: Product): Boolean = {
       val fieldVal = Types.getFieldToValueMap(product)(f.field)
+      val rightVal = f.value
       
       f.op match {
         case PredicateOps.Eq =>
@@ -49,27 +53,67 @@ object MapStore {
           fieldVal != f.value
         case PredicateOps.Gt =>
           fieldVal match {
-            case i: Int => i > f.value.asInstanceOf[Int]
-            case i: Long => i > f.value.asInstanceOf[Long]
-            case _ => throw new IllegalArgumentException("Can compare using > relationship only between Int ot Long types")
+            case left: Int => left > rightVal.asInstanceOf[Int]
+            case left: Long => left > rightVal.asInstanceOf[Long]
+            case left: String => left > rightVal.asInstanceOf[String]
+            case left: Timestamp => left > rightVal.asInstanceOf[Timestamp]
+            case left@Some(x) =>
+              x match {
+                case _: Int => left.asInstanceOf[Option[Int]] > rightVal.asInstanceOf[Int]
+                case _: Long => left.asInstanceOf[Option[Long]] > rightVal.asInstanceOf[Long]
+                case _: String => left.asInstanceOf[Option[String]] > rightVal.asInstanceOf[String]
+                case _: Timestamp => left.asInstanceOf[Option[Timestamp]] > rightVal.asInstanceOf[Timestamp]
+              }
+            case None => false
+            case _ => throw new IllegalArgumentException("Can't compare using > relationship")
           }
         case PredicateOps.Lt =>
           fieldVal match {
-            case i: Int => i < f.value.asInstanceOf[Int]
-            case i: Long => i < f.value.asInstanceOf[Long]
-            case _ => throw new IllegalArgumentException("Can compare using < relationship only between Int ot Long types")
+            case left: Int => left < rightVal.asInstanceOf[Int]
+            case left: Long => left < rightVal.asInstanceOf[Long]
+            case left: String => left < rightVal.asInstanceOf[String]
+            case left: Timestamp => left < rightVal.asInstanceOf[Timestamp]
+            case left@Some(x) =>
+              x match {
+                case _: Int => left.asInstanceOf[Option[Int]] < rightVal.asInstanceOf[Int]
+                case _: Long => left.asInstanceOf[Option[Long]] < rightVal.asInstanceOf[Long]
+                case _: String => left.asInstanceOf[Option[String]] < rightVal.asInstanceOf[String]
+                case _: Timestamp => left.asInstanceOf[Option[Timestamp]] < rightVal.asInstanceOf[Timestamp]
+              }
+            case None => false
+            case _ => throw new IllegalArgumentException("Can't compare using < relationship")
           }
         case PredicateOps.GtE =>
           fieldVal match {
-            case i: Int => i >= f.value.asInstanceOf[Int]
-            case i: Long => i >= f.value.asInstanceOf[Long]
-            case _ => throw new IllegalArgumentException("Can compare using >= relationship only between Int ot Long types")
+            case left: Int => left >= rightVal.asInstanceOf[Int]
+            case left: Long => left >= rightVal.asInstanceOf[Long]
+            case left: String => left >= rightVal.asInstanceOf[String]
+            case left: Timestamp => left >= rightVal.asInstanceOf[Timestamp]
+            case left@Some(x) =>
+              x match {
+                case _: Int => left.asInstanceOf[Option[Int]] >= rightVal.asInstanceOf[Int]
+                case _: Long => left.asInstanceOf[Option[Long]] >= rightVal.asInstanceOf[Long]
+                case _: String => left.asInstanceOf[Option[String]] >= rightVal.asInstanceOf[String]
+                case _: Timestamp => left.asInstanceOf[Option[Timestamp]] >= rightVal.asInstanceOf[Timestamp]
+              }
+            case None => false
+            case _ => throw new IllegalArgumentException("Can't compare using >= relationship")
           }
         case PredicateOps.LtE =>
           fieldVal match {
-            case i: Int => i <= f.value.asInstanceOf[Int]
-            case i: Long => i <= f.value.asInstanceOf[Long]
-            case _ => throw new IllegalArgumentException("Can compare using <= relationship only between Int ot Long types")
+            case left: Int => left <= rightVal.asInstanceOf[Int]
+            case left: Long => left <= rightVal.asInstanceOf[Long]
+            case left: String => left <= rightVal.asInstanceOf[String]
+            case left: Timestamp => left <= rightVal.asInstanceOf[Timestamp]
+            case left@Some(x) =>
+              x match {
+                case _: Int => left.asInstanceOf[Option[Int]] <= rightVal.asInstanceOf[Int]
+                case _: Long => left.asInstanceOf[Option[Long]] <= rightVal.asInstanceOf[Long]
+                case _: String => left.asInstanceOf[Option[String]] <= rightVal.asInstanceOf[String]
+                case _: Timestamp => left.asInstanceOf[Option[Timestamp]] <= rightVal.asInstanceOf[Timestamp]
+              }
+            case None => false
+            case _ => throw new IllegalArgumentException("Can't compare using <= relationship")
           }
       }
     }
