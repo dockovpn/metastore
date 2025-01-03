@@ -4,11 +4,10 @@
 
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.predicate.Predicates._
 import io.dockovpn.metastore.predicate.Implicits._
+import io.dockovpn.metastore.predicate.Predicates._
 import io.dockovpn.metastore.store.MapStore.PredicateWrapper
 import io.dockovpn.metastore.util.Types
-import io.dockovpn.metastore.util.Types.getInstanceType
 
 import java.sql.Timestamp
 import scala.collection.concurrent.TrieMap

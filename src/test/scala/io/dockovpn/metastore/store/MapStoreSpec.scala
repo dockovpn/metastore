@@ -387,6 +387,227 @@ with BeforeAndAfter {
           getResult should be(Seq(value))
         }
       }
+      "op is !=" when {
+        "value is IntRecord" in {
+          val testStore: AbstractStore[IntRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val fieldValue = 1
+          val value1 = IntRecord(id = key1, value = fieldValue)
+          val value2 = IntRecord(id = key2, value = fieldValue + 1)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is LongRecord" in {
+          val testStore: AbstractStore[LongRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val fieldValue = 1L
+          val value1 = LongRecord(id = key1, value = fieldValue)
+          val value2 = LongRecord(id = key2, value = fieldValue + 1L)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is StringRecord" in {
+          val testStore: AbstractStore[StringRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val fieldValue = "example"
+          val value1 = StringRecord(id = key1, value = fieldValue)
+          val value2 = StringRecord(id = key2, value = fieldValue + "1")
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is TimestampRecord" in {
+          val testStore: AbstractStore[TimestampRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val instant = Instant.now()
+          val fieldValue = Timestamp.from(instant)
+          val value1 = TimestampRecord(id = key1, value = fieldValue)
+          val value2 = TimestampRecord(id = key2, value = Timestamp.from(instant.plus(Period.ofDays(1))))
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is OptIntRecord and filed is Some(_)" in {
+          val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = 1
+          val value1 = OptIntRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptIntRecord(id = key2, value = Some(fieldValue + 1))
+          val value3 = OptIntRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != Some(fieldValue)).futureValue
+          getResult should be(Seq(value3, value2)) //ordering issue
+        }
+        "value is OptIntRecord and filed is None" in {
+          val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = 1
+          val value1 = OptIntRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptIntRecord(id = key2, value = Some(fieldValue + 1))
+          val value3 = OptIntRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != None).futureValue
+          getResult should be(Seq(value1, value2)) //ordering issue
+        }
+        "value is OptLongRecord and filed is Some(_)" in {
+          val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = 1L
+          val value1 = OptLongRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptLongRecord(id = key2, value = Some(fieldValue + 1L))
+          val value3 = OptLongRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != Some(fieldValue)).futureValue
+          getResult should be(Seq(value3, value2)) //ordering issue
+        }
+        "value is OptLongRecord and filed is None" in {
+          val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = 1L
+          val value1 = OptLongRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptLongRecord(id = key2, value = Some(fieldValue + 1L))
+          val value3 = OptLongRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != None).futureValue
+          getResult should be(Seq(value1, value2)) //ordering issue
+        }
+        "value is OptStringRecord and filed is Some(_)" in {
+          val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = "example"
+          val value1 = OptStringRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptStringRecord(id = key2, value = Some(fieldValue + "1"))
+          val value3 = OptStringRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != Some(fieldValue)).futureValue
+          getResult should be(Seq(value3, value2))
+        }
+        "value is OptStringRecord and filed is None" in {
+          val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = "example"
+          val value1 = OptStringRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptStringRecord(id = key2, value = Some(fieldValue + "1"))
+          val value3 = OptStringRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != None).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+        "value is OptTimestampRecord and filed is Some(_)" in {
+          val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val instant = Instant.now()
+          val fieldValue = Timestamp.from(instant)
+          val value1 = OptTimestampRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptTimestampRecord(id = key2, value = Some(Timestamp.from(instant.plus(Period.ofDays(1)))))
+          val value3 = OptTimestampRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != Some(fieldValue)).futureValue
+          getResult should be(Seq(value3, value2))
+        }
+        "value is OptTimestampRecord and filed is None" in {
+          val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val instant = Instant.now()
+          val fieldValue = Timestamp.from(instant)
+          val value1 = OptTimestampRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptTimestampRecord(id = key2, value = Some(Timestamp.from(instant.plus(Period.ofDays(1)))))
+          val value3 = OptTimestampRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value != None).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+      }
       "op is >" when {
         "value is IntRecord" in {
           val testStore: AbstractStore[IntRecord] = StoreProvider.getStoreByType(mapStoreType)
@@ -672,6 +893,294 @@ with BeforeAndAfter {
           opResult should be(())
           
           val getResult = testStore.filter(_.value >= fieldValue).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+      }
+      "op is <" when {
+        "value is IntRecord" in {
+          val testStore: AbstractStore[IntRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val fieldValue = 2
+          val value1 = IntRecord(id = key1, value = fieldValue)
+          val value2 = IntRecord(id = key2, value = fieldValue - 1)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value < fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is LongRecord" in {
+          val testStore: AbstractStore[LongRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val fieldValue = 2L
+          val value1 = LongRecord(id = key1, value = fieldValue)
+          val value2 = LongRecord(id = key2, value = fieldValue - 1L)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value < fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is StringRecord" in {
+          val testStore: AbstractStore[StringRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val fieldValue = "example1"
+          val value1 = StringRecord(id = key1, value = fieldValue)
+          val value2 = StringRecord(id = key2, value = fieldValue.stripSuffix("1"))
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value < fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is TimestampRecord" in {
+          val testStore: AbstractStore[TimestampRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val instant = Instant.now().plus(Period.ofDays(1))
+          val fieldValue = Timestamp.from(instant)
+          val value1 = TimestampRecord(id = key1, value = fieldValue)
+          val value2 = TimestampRecord(id = key2, value = Timestamp.from(Instant.now()))
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value < fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is OptIntRecord" in {
+          val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = 2
+          val value1 = OptIntRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptIntRecord(id = key2, value = Some(fieldValue - 1))
+          val value3 = OptIntRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value < fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is OptLongRecord" in {
+          val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = 2L
+          val value1 = OptLongRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptLongRecord(id = key2, value = Some(fieldValue - 1L))
+          val value3 = OptLongRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value < fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is OptStringRecord" in {
+          val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = "example1"
+          val value1 = OptStringRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptStringRecord(id = key2, value = Some(fieldValue.stripSuffix("1")))
+          val value3 = OptStringRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value < fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+        "value is OptTimestampRecord" in {
+          val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val instant = Instant.now().plus(Period.ofDays(1))
+          val fieldValue = Timestamp.from(instant)
+          val value1 = OptTimestampRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptTimestampRecord(id = key2, value = Some(Timestamp.from(Instant.now())))
+          val value3 = OptTimestampRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value < fieldValue).futureValue
+          getResult should be(Seq(value2))
+        }
+      }
+      "op is <=" when {
+        "value is IntRecord" in {
+          val testStore: AbstractStore[IntRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val fieldValue = 2
+          val value1 = IntRecord(id = key1, value = fieldValue)
+          val value2 = IntRecord(id = key2, value = fieldValue - 1)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value <= fieldValue).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+        "value is LongRecord" in {
+          val testStore: AbstractStore[LongRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val fieldValue = 2L
+          val value1 = LongRecord(id = key1, value = fieldValue)
+          val value2 = LongRecord(id = key2, value = fieldValue - 1L)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value <= fieldValue).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+        "value is StringRecord" in {
+          val testStore: AbstractStore[StringRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val fieldValue = "example1"
+          val value1 = StringRecord(id = key1, value = fieldValue)
+          val value2 = StringRecord(id = key2, value = fieldValue.stripSuffix("1"))
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value <= fieldValue).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+        "value is TimestampRecord" in {
+          val testStore: AbstractStore[TimestampRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val instant = Instant.now().plus(Period.ofDays(1))
+          val fieldValue = Timestamp.from(instant)
+          val value1 = TimestampRecord(id = key1, value = fieldValue)
+          val value2 = TimestampRecord(id = key2, value = Timestamp.from(Instant.now()))
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value <= fieldValue).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+        "value is OptIntRecord" in {
+          val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = 2
+          val value1 = OptIntRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptIntRecord(id = key2, value = Some(fieldValue - 1))
+          val value3 = OptIntRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value <= fieldValue).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+        "value is OptLongRecord" in {
+          val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = 2L
+          val value1 = OptLongRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptLongRecord(id = key2, value = Some(fieldValue - 1L))
+          val value3 = OptLongRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value <= fieldValue).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+        "value is OptStringRecord" in {
+          val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val fieldValue = "example1"
+          val value1 = OptStringRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptStringRecord(id = key2, value = Some(fieldValue.stripSuffix("1")))
+          val value3 = OptStringRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value <= fieldValue).futureValue
+          getResult should be(Seq(value1, value2))
+        }
+        "value is OptTimestampRecord" in {
+          val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(mapStoreType)
+          val key1 = "key1"
+          val key2 = "key2"
+          val key3 = "key3"
+          val instant = Instant.now().plus(Period.ofDays(1))
+          val fieldValue = Timestamp.from(instant)
+          val value1 = OptTimestampRecord(id = key1, value = Some(fieldValue))
+          val value2 = OptTimestampRecord(id = key2, value = Some(Timestamp.from(Instant.now())))
+          val value3 = OptTimestampRecord(id = key3, value = None)
+          val opResult: Unit = (for {
+            _ <- testStore.put(key1, value1)
+            _ <- testStore.put(key2, value2)
+            _ <- testStore.put(key3, value3)
+          } yield ()).futureValue
+          opResult should be(())
+          
+          val getResult = testStore.filter(_.value <= fieldValue).futureValue
           getResult should be(Seq(value1, value2))
         }
       }
