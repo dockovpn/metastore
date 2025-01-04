@@ -1,6 +1,6 @@
 package io.dockovpn.metastore.db
 
-import io.dockovpn.metastore.predicate.Predicates.{FieldPredicate, Predicate}
+import io.dockovpn.metastore.predicate.Predicates.{CombPredicate, FieldPredicate, Predicate, PredicateBool, PredicateOps}
 import io.dockovpn.metastore.util.Strings.toCamelCase
 
 object Sql {
@@ -31,17 +31,69 @@ object Sql {
     sqlValue
   }
   
+  private def evalCombPredicate(c: CombPredicate, schema: TableSchema): String = (c.left, c.right, c.bop) match {
+    case (fl: FieldPredicate, fr: FieldPredicate, bop) => bop match {
+      case PredicateBool.And => evalFieldPredicate(fl, schema) + "\nAND\n" + evalFieldPredicate(fr, schema)
+      case PredicateBool.Or => evalFieldPredicate(fl, schema) + "\nOR\n" + evalFieldPredicate(fr, schema)
+    }
+    case (fl: FieldPredicate, cr: CombPredicate, bop) => bop match {
+      case PredicateBool.And => evalFieldPredicate(fl, schema) + "\nAND\n" + evalCombPredicate(cr, schema)
+      case PredicateBool.Or => evalFieldPredicate(fl, schema) + "\nOR\n" + evalCombPredicate(cr, schema)
+    }
+    case (cl: CombPredicate, fr: FieldPredicate, bop) => bop match {
+      case PredicateBool.And => evalCombPredicate(cl, schema) + "\nAND\n" + evalFieldPredicate(fr, schema)
+      case PredicateBool.Or => evalCombPredicate(cl, schema) + "\nOR\n" + evalFieldPredicate(fr, schema)
+    }
+    case (cl: CombPredicate, cr: CombPredicate, bop) => bop match {
+      case PredicateBool.And => evalCombPredicate(cl, schema) + "\nAND\n" + evalCombPredicate(cr, schema)
+      case PredicateBool.Or => evalCombPredicate(cl, schema) + "\nOR\n" + evalCombPredicate(cr, schema)
+    }
+  }
+  
   def predicateToSql(predicate: Predicate, schema: TableSchema): String = {
     predicate match {
-      case FieldPredicate(field, _, value) =>
-        val columnName = toCamelCase(field)
-        val sqlType = schema(columnName)
-        val sqlValue = valueToSqlType(value, sqlType)
+      case x: FieldPredicate =>
+        evalFieldPredicate(x, schema)
+      case x: CombPredicate =>
+      evalCombPredicate(x, schema)
+    }
+  }
+  
+  private def evalFieldPredicate(f: FieldPredicate, schema: TableSchema): String = {
+    val columnName = toCamelCase(f.field)
+    val sqlType = schema(columnName)
+    val sqlValue = valueToSqlType(f.value, sqlType)
+    f.op match {
+      case PredicateOps.Eq =>
         if (sqlValue == "NULL")
           s"$columnName IS NULL"
         else
           s"$columnName = $sqlValue"
-      case _ => "1=1" // not implemented
+      case PredicateOps.Neq =>
+        if (sqlValue == "NULL")
+          s"$columnName IS NOT NULL"
+        else
+          s"$columnName != $sqlValue"
+      case PredicateOps.Gt =>
+        if (sqlValue == "NULL")
+          throw new IllegalArgumentException("Cannot compare with NULL using > relationship")
+        else
+          s"$columnName > $sqlValue"
+      case PredicateOps.Lt =>
+        if (sqlValue == "NULL")
+          throw new IllegalArgumentException("Cannot compare with NULL using < relationship")
+        else
+          s"$columnName < $sqlValue"
+      case PredicateOps.GtE =>
+        if (sqlValue == "NULL")
+          throw new IllegalArgumentException("Cannot compare with NULL using >= relationship")
+        else
+          s"$columnName >= $sqlValue"
+      case PredicateOps.LtE =>
+        if (sqlValue == "NULL")
+          throw new IllegalArgumentException("Cannot compare with NULL using <= relationship")
+        else
+          s"$columnName <= $sqlValue"
     }
   }
 }
