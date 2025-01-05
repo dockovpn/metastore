@@ -46,7 +46,7 @@ object TestData {
       val OptLongRecordClass: String = getType[OptLongRecord].toString.replace("TestData.", "TestData$")
       val OptStringRecordClass: String = getType[OptStringRecord].toString.replace("TestData.", "TestData$")
       val OptTimestampRecordClass: String = getType[OptTimestampRecord].toString.replace("TestData.", "TestData$")
-      //val ComplexTestRecordClass: String = getType[ComplexTestRecord].toString.replace("TestData.", "TestData$")
+      val ComplexTestRecordClass: String = getType[ComplexTestRecord].toString.replace("TestData.", "TestData$")
   
       tag.runtimeClass.getName match {
         case IntRecordClass =>
@@ -111,6 +111,14 @@ object TestData {
             fieldName = "id",
             rconv = GetResult { r =>
               OptTimestampRecord(r.<<, r.<<)
+            }
+          )
+        case ComplexTestRecordClass =>
+          new TableMetadata(
+            tableName = "complex_test_record",
+            fieldName = "id",
+            rconv = GetResult { r =>
+              ComplexTestRecord(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<)
             }
           )
         case unrecognizedType =>
@@ -190,6 +198,21 @@ object TestData {
                |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
                |""".stripMargin.as[Unit]
         },
+        dbRef.run {
+          sql"""CREATE TABLE `complex_test_record` (
+               |	id varchar(100) NOT NULL,
+               |	int_value INT NOT NULL,
+               |	long_value BIGINT NOT NULL,
+               |	string_value varchar(100) NOT NULL,
+               |	timestamp_value TIMESTAMP(6) NOT NULL,
+               |	opt_int_value INT NULL,
+               |	opt_long_value BIGINT NULL,
+               |	opt_string_value varchar(100) NULL,
+               |	opt_timestamp_value TIMESTAMP(6) NULL,
+               |	CONSTRAINT complex_test_record_PK PRIMARY KEY (id)
+               |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+               |""".stripMargin.as[Unit]
+        },
       )).map(_ => ())
     }
     
@@ -225,6 +248,10 @@ object TestData {
         },
         dbRef.run {
           sql"""TRUNCATE TABLE opt_timestamp_records
+               |""".stripMargin.as[Unit]
+        },
+        dbRef.run {
+          sql"""TRUNCATE TABLE complex_test_record
                |""".stripMargin.as[Unit]
         },
       )).map(_ => ())
