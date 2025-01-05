@@ -47,9 +47,16 @@ object MapStore {
       
       f.op match {
         case PredicateOps.Eq =>
+          /*fieldVal match {
+            case None => false
+            case _ => fieldVal == f.value
+          }*/
           fieldVal == f.value
         case PredicateOps.Neq =>
-          fieldVal != f.value
+          fieldVal match {
+            case None => false
+            case _ => fieldVal != f.value
+          }
         case PredicateOps.Gt =>
           fieldVal match {
             case left: Int => left > rightVal.asInstanceOf[Int]
