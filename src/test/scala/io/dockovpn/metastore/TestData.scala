@@ -153,7 +153,7 @@ object TestData {
         dbRef.run {
           sql"""CREATE TABLE `timestamp_records` (
                |  `id` varchar(100) NOT NULL,
-               |  `value` timestamp NOT NULL,
+               |  `value` timestamp(6) NOT NULL,
                |  PRIMARY KEY (`id`)
                |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
                |""".stripMargin.as[Unit]
@@ -185,7 +185,7 @@ object TestData {
         dbRef.run {
           sql"""CREATE TABLE `opt_timestamp_records` (
                |  `id` varchar(100) NOT NULL,
-               |  `value` timestamp NULL DEFAULT NULL,
+               |  `value` timestamp(6) NULL DEFAULT NULL,
                |  PRIMARY KEY (`id`)
                |) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
                |""".stripMargin.as[Unit]

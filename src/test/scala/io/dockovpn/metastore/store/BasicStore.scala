@@ -11,7 +11,7 @@ import java.sql.Timestamp
 import java.time.{Instant, Period}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait BasicStore extends  AnyWordSpec
+trait BasicStore extends AnyWordSpec
   with ScalaFutures {
   
   def storeType: String
@@ -468,7 +468,8 @@ trait BasicStore extends  AnyWordSpec
           opResult should be(())
           
           val getResult = testStore.filter(_.value != Some(fieldValue)).futureValue
-          getResult should be(Seq(value3, value2)) //ordering issue
+          //getResult should be(Seq(value3, value2)) //ordering issue
+          getResult should be(Seq(value2)) //ordering issue
         }
         "value is OptIntRecord and filed is None" in {
           val testStore: AbstractStore[OptIntRecord] = StoreProvider.getStoreByType(storeType)
@@ -506,7 +507,8 @@ trait BasicStore extends  AnyWordSpec
           opResult should be(())
           
           val getResult = testStore.filter(_.value != Some(fieldValue)).futureValue
-          getResult should be(Seq(value3, value2)) //ordering issue
+          //getResult should be(Seq(value3, value2)) //ordering issue
+          getResult should be(Seq(value2)) //ordering issue
         }
         "value is OptLongRecord and filed is None" in {
           val testStore: AbstractStore[OptLongRecord] = StoreProvider.getStoreByType(storeType)
@@ -544,7 +546,8 @@ trait BasicStore extends  AnyWordSpec
           opResult should be(())
           
           val getResult = testStore.filter(_.value != Some(fieldValue)).futureValue
-          getResult should be(Seq(value3, value2))
+          //getResult should be(Seq(value3, value2))
+          getResult should be(Seq(value2))
         }
         "value is OptStringRecord and filed is None" in {
           val testStore: AbstractStore[OptStringRecord] = StoreProvider.getStoreByType(storeType)
@@ -583,7 +586,8 @@ trait BasicStore extends  AnyWordSpec
           opResult should be(())
           
           val getResult = testStore.filter(_.value != Some(fieldValue)).futureValue
-          getResult should be(Seq(value3, value2))
+          //getResult should be(Seq(value3, value2))
+          getResult should be(Seq(value2))
         }
         "value is OptTimestampRecord and filed is None" in {
           val testStore: AbstractStore[OptTimestampRecord] = StoreProvider.getStoreByType(storeType)

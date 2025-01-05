@@ -19,7 +19,7 @@ object Sql {
     val maybeQuotedValue = sqlType match {
       case a if a startsWith "varchar" => s"'$maybeNullValue'"
       case "tinyint(1)" => if (maybeNullValue.asInstanceOf[Boolean]) 1 else 0
-      case "timestamp" => s"'$maybeNullValue'"
+      case t if t startsWith "timestamp" => s"'$maybeNullValue'"
       case "uuid" => s"'$maybeNullValue'"
       case _ => maybeNullValue
     }
@@ -47,15 +47,6 @@ object Sql {
     case (cl: CombPredicate, cr: CombPredicate, bop) => bop match {
       case PredicateBool.And => evalCombPredicate(cl, schema) + "\nAND\n" + evalCombPredicate(cr, schema)
       case PredicateBool.Or => evalCombPredicate(cl, schema) + "\nOR\n" + evalCombPredicate(cr, schema)
-    }
-  }
-  
-  def predicateToSql(predicate: Predicate, schema: TableSchema): String = {
-    predicate match {
-      case x: FieldPredicate =>
-        evalFieldPredicate(x, schema)
-      case x: CombPredicate =>
-      evalCombPredicate(x, schema)
     }
   }
   
@@ -94,6 +85,15 @@ object Sql {
           throw new IllegalArgumentException("Cannot compare with NULL using <= relationship")
         else
           s"$columnName <= $sqlValue"
+    }
+  }
+  
+  def predicateToSql(predicate: Predicate, schema: TableSchema): String = {
+    predicate match {
+      case x: FieldPredicate =>
+        evalFieldPredicate(x, schema)
+      case x: CombPredicate =>
+        evalCombPredicate(x, schema)
     }
   }
 }

@@ -21,9 +21,11 @@ object Queries {
   def filter[V](predicate: Predicate, table: String, schema: TableSchema)(implicit rconv: GetResult[V]): SqlStreamingAction[Vector[V], V, Effect] = {
     val sqlPredicate = Sql.predicateToSql(predicate, schema)
     
-    sql"""SELECT * FROM #$table
+    val q = sql"""SELECT * FROM #$table
          |WHERE #$sqlPredicate
          |""".stripMargin.as[V]
+    println(q.statements.mkString)
+    q
   }
          
   def insertRecordIntoTable[V](keys: Seq[String], values: Seq[Any], table: String)
@@ -31,7 +33,9 @@ object Queries {
     val keysStr = keys.mkString(", ")
     val valuesStr = values.mkString(", ")
     
-    sql"""INSERT INTO #$table (#$keysStr) VALUES(#$valuesStr)""".as[V]
+    val q = sql"""INSERT INTO #$table (#$keysStr) VALUES(#$valuesStr)""".as[V]
+    println(q.statements.mkString)
+    q
   }
   
   def updateRecordInTable[V](k: String, field: String, keys: Seq[String], values: Seq[Any], table: String)
