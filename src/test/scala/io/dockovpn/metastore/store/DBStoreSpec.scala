@@ -1,6 +1,6 @@
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.TestData._
+import io.dockovpn.metastore.TestData.*
 import io.dockovpn.metastore.container.MariadbContainer
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 

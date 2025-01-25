@@ -16,13 +16,13 @@ import scala.reflect.ClassTag
 
 /**
  * Database table backed store implementation
- * @param ec
- * @param dbRef
- * @tparam V
+ * @param ec [[ExecutionContext]]
+ * @param metadataProvider [[AbstractTableMetadataProvider]] that contains info on how to read different tables
+ * @param dbRef [[DBRef]] database context
+ * @tparam V type
  */
-class DBStore[V <: Product](implicit ec: ExecutionContext,
+class DBStore[V <: Product: ClassTag](implicit ec: ExecutionContext,
                             metadataProvider: AbstractTableMetadataProvider,
-                            tag: ClassTag[V],
                             dbRef: => DBRef) extends AbstractStore[V] {
   
   private val tableMetadata = metadataProvider.getTableMetadata[V]
@@ -33,7 +33,7 @@ class DBStore[V <: Product](implicit ec: ExecutionContext,
     }.map(_.toMap)
   }
   
-  import tableMetadata.implicits._
+  import tableMetadata.implicits.*
   
   override def contains(k: String): Future[Boolean] = get(k).map(_.nonEmpty)
   

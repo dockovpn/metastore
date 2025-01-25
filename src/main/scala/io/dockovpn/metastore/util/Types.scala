@@ -4,7 +4,7 @@
 
 package io.dockovpn.metastore.util
 
-import scala.reflect.runtime.universe._
+import scala.reflect.runtime.universe.*
 import scala.util.Try
 
 object Types {

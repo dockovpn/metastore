@@ -4,8 +4,8 @@
 
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.predicate.Implicits._
-import io.dockovpn.metastore.predicate.Predicates._
+import io.dockovpn.metastore.predicate.Implicits.*
+import io.dockovpn.metastore.predicate.Predicates.*
 import io.dockovpn.metastore.store.MapStore.PredicateWrapper
 import io.dockovpn.metastore.util.Types
 

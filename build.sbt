@@ -1,5 +1,5 @@
 ThisBuild / version := sys.env.getOrElse("LIB_VERSION", "0.7.1-SNAPSHOT").replace("release/", "")
-ThisBuild / scalaVersion := "2.13.11"
+ThisBuild / scalaVersion := "2.13.15"
 ThisBuild / organization := "io.dockovpn"
 ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("11")
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Branch("release")))
@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "metastore",
     scalacOptions ++= Seq(
-      //"-deprecation",
+      "-Xsource:3",
       "-encoding", "utf-8",                // Specify character encoding used by source files.
       "-explaintypes",                     // Explain type errors in more detail.
       "-feature",                          // Emit warning and location for usages of features that should be imported explicitly.

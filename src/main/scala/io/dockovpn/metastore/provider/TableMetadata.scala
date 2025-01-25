@@ -9,9 +9,9 @@ import slick.jdbc.GetResult
 class TableMetadata(
   val tableName    : String,
   val fieldName    : String,
-  private val rconv: GetResult[_]
+  private val rconv: GetResult[?]
 ) {
   object implicits {
-    implicit val converter: GetResult[_] = rconv
+    implicit val converter: GetResult[?] = rconv
   }
 }

@@ -2,11 +2,11 @@ package io.dockovpn.metastore.predicate
 
 import io.dockovpn.metastore.util.Strings.StringOps
 
-import scala.reflect.macros._
+import scala.reflect.macros.*
   
 object FilterMacros {
   def impl[A](c: whitebox.Context)(predicate: c.Expr[A => Boolean]): c.Tree = {
-    import c.universe._
+    import c.universe.*
     
     val productToPredicateOpMap = Map(
       "==" -> "PredicateOps.Eq",

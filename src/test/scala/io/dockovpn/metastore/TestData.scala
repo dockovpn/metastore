@@ -6,7 +6,7 @@ import io.dockovpn.metastore.provider.{AbstractTableMetadataProvider, TableMetad
 import io.dockovpn.metastore.util.Lazy.lazily
 import io.dockovpn.metastore.util.Types.getType
 import slick.jdbc.GetResult
-import slick.jdbc.MySQLProfile.api._
+import slick.jdbc.MySQLProfile.api.*
 
 import java.sql.Timestamp
 import scala.concurrent.ExecutionContext.Implicits.global

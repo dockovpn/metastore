@@ -12,10 +12,9 @@ import scala.reflect.ClassTag
 
 object StoreProvider {
   
-  def getStoreByType[V <: Product](storeType: String)
+  def getStoreByType[V <: Product: ClassTag](storeType: String)
                                   (implicit ec: ExecutionContext,
                                             metadataProvider: AbstractTableMetadataProvider,
-                                            tag: ClassTag[V],
                                             DBRef: DBRef = noopDB): AbstractStore[V] =
     storeType match {
       case StoreType.MapStoreType =>

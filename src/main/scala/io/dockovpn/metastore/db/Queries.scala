@@ -7,7 +7,7 @@ package io.dockovpn.metastore.db
 import io.dockovpn.metastore.predicate.Predicates.Predicate
 import Sql.TableSchema
 import slick.jdbc.GetResult
-import slick.jdbc.MySQLProfile.api._
+import slick.jdbc.MySQLProfile.api.*
 import slick.sql.SqlStreamingAction
 
 object Queries {

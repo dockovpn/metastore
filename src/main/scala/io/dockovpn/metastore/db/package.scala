@@ -7,7 +7,7 @@ package io.dockovpn.metastore
 import io.dockovpn.metastore.util.Lazy
 import io.dockovpn.metastore.util.Lazy.lazily
 import slick.jdbc.MySQLProfile
-import slick.jdbc.MySQLProfile.api._
+import slick.jdbc.MySQLProfile.api.*
 
 package object db {
   type DBRef = Lazy[MySQLProfile.backend.Database]

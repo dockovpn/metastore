@@ -1,10 +1,10 @@
 package io.dockovpn.metastore.store
 
-import io.dockovpn.metastore.TestData._
-import io.dockovpn.metastore.predicate.Implicits._
+import io.dockovpn.metastore.TestData.*
+import io.dockovpn.metastore.predicate.Implicits.*
 import io.dockovpn.metastore.provider.StoreProvider
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.time.Span
 import org.scalatest.wordspec.AnyWordSpec
 
